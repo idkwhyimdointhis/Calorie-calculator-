@@ -1,0 +1,1197 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUEL -- Daily Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #161616;
+    --border: #1e1e1e;
+    --blue: #2563eb;
+    --blue-dim: #1d4ed8;
+    --green: #16a34a;
+    --green-bright: #22c55e;
+    --green-dim: #15803d;
+    --red: #dc2626;
+    --text: #f0f0f0;
+    --text-muted: #555;
+    --text-dim: #888;
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 6px;
+    color: var(--green-bright);
+  }
+  .date-display {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* ── Motivation Banner ── */
+  .motivation-bar {
+    background: linear-gradient(90deg, #0f2027, #1a3a1a, #0f2027);
+    border-bottom: 1px solid #1a3a1a;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .motivation-bar .icon { font-size: 16px; }
+  .motivation-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green-bright);
+    font-style: italic;
+    flex: 1;
+  }
+  .quote-btn {
+    background: none;
+    border: 1px solid #1a3a1a;
+    border-radius: 4px;
+    color: var(--text-muted);
+    font-size: 10px;
+    font-family: var(--mono);
+    cursor: pointer;
+    padding: 3px 8px;
+    transition: all 0.2s;
+  }
+  .quote-btn:hover { border-color: var(--green-dim); color: var(--green-bright); }
+
+  /* ── Main Layout ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+
+  /* ── Totals Dashboard ── */
+  .totals-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .total-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .total-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .total-card.cal::before { background: var(--blue); }
+  .total-card.prot::before { background: var(--green-bright); }
+  .total-card.carb::before { background: #f59e0b; }
+  .total-card.fat::before { background: #ef4444; }
+  .total-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .total-value {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .total-card.cal .total-value { color: var(--blue); }
+  .total-card.prot .total-value { color: var(--green-bright); }
+  .total-card.carb .total-value { color: #f59e0b; }
+  .total-card.fat .total-value { color: #ef4444; }
+  .total-unit {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── Goal Bar ── */
+  .goal-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+  }
+  .goal-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .goal-label { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
+  .goal-remaining {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--green-bright);
+    transition: color 0.3s;
+  }
+  .goal-remaining.over { color: var(--red); }
+  .progress-track {
+    background: var(--border);
+    border-radius: 2px;
+    height: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--blue), var(--green-bright));
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+    max-width: 100%;
+  }
+  .progress-fill.over { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .goal-edit-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .goal-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 8px;
+    width: 80px;
+  }
+  .goal-save-btn {
+    background: none;
+    border: 1px solid var(--blue-dim);
+    border-radius: 4px;
+    color: var(--blue);
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 4px 10px;
+    transition: all 0.2s;
+  }
+  .goal-save-btn:hover { background: var(--blue); color: #fff; }
+
+  /* ── Craving Guard ── */
+  .craving-guard {
+    background: linear-gradient(135deg, #0a0a0a, #0f1a0f);
+    border: 1px solid #1a3a1a;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .craving-icon { font-size: 22px; }
+  .craving-text { flex: 1; }
+  .craving-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--green-bright);
+    margin-bottom: 2px;
+  }
+  .craving-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .craving-btn {
+    background: var(--surface);
+    border: 1px solid #1a3a1a;
+    border-radius: 6px;
+    color: var(--green-bright);
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 8px 12px;
+    text-align: center;
+    line-height: 1.4;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .craving-btn:hover { background: #0f2a0f; border-color: var(--green-bright); }
+
+  /* ── Section ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  /* ── Add Buttons ── */
+  .btn-primary {
+    background: var(--blue);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .btn-primary:hover { background: var(--blue-dim); }
+  .btn-green {
+    background: var(--green);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    padding: 8px 16px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  .btn-green:hover { background: var(--green-dim); }
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 6px 12px;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+
+  /* ── Entry Form ── */
+  .entry-form {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .entry-form.visible { display: block; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px;
+    gap: 8px;
+    align-items: center;
+  }
+  .form-col-label {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .col-lbl {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .col-lbl:first-child { text-align: left; }
+  input[type="text"], input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    width: 100%;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+  input:focus { outline: none; border-color: var(--blue); }
+  .form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
+  }
+
+  /* ── Meal Builder ── */
+  .meal-builder {
+    background: var(--surface);
+    border: 1px solid #1a2e1a;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: none;
+  }
+  .meal-builder.visible { display: block; }
+  .meal-builder-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .meal-name-input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 14px;
+    padding: 6px 12px;
+    flex: 1;
+  }
+  .meal-ingredients { display: flex; flex-direction: column; gap: 8px; }
+  .ingredient-row {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px 28px;
+    gap: 6px;
+    align-items: center;
+  }
+  .remove-ing {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+  }
+  .remove-ing:hover { color: var(--red); }
+  .meal-sub-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .meal-totals-preview {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .meal-total-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+  .meal-total-num {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .meal-total-lbl {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* ── Log Entries ── */
+  .log-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .log-table-header {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px 40px;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+  .th {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .th:first-child { text-align: left; }
+  .log-empty {
+    padding: 40px 24px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .log-entry {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px 40px;
+    gap: 8px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.15s;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-entry:hover { background: var(--surface2); }
+  .entry-name {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .entry-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green-dim);
+    letter-spacing: 1px;
+    display: block;
+    margin-top: 1px;
+  }
+  .entry-val {
+    font-family: var(--mono);
+    font-size: 13px;
+    text-align: center;
+  }
+  .entry-val.cal { color: var(--blue); }
+  .entry-val.prot { color: var(--green-bright); }
+  .entry-val.carb { color: #f59e0b; }
+  .entry-val.fat { color: #ef4444; }
+  .del-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+  .del-btn:hover { background: #2a0a0a; color: var(--red); }
+
+  /* ── Meal group ── */
+  .meal-group-header {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px 40px;
+    gap: 8px;
+    padding: 10px 16px 8px;
+    background: #0f1f0f;
+    border-bottom: 1px solid #1a3a1a;
+    align-items: center;
+  }
+  .meal-group-name {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green-bright);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meal-group-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  .meal-group-val.cal { color: var(--blue); }
+  .meal-group-val.prot { color: var(--green-bright); }
+  .meal-group-val.carb { color: #f59e0b; }
+  .meal-group-val.fat { color: #ef4444; }
+
+  .meal-ing-entry {
+    display: grid;
+    grid-template-columns: 2fr 90px 80px 80px 80px 40px;
+    gap: 8px;
+    padding: 8px 16px 8px 30px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    background: #080808;
+  }
+  .meal-ing-entry:last-child { border-bottom: none; }
+  .meal-ing-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  /* ── Day Controls ── */
+  .day-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .day-nav {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 6px 12px;
+    transition: all 0.2s;
+  }
+  .day-nav:hover { border-color: var(--text-dim); color: var(--text); }
+  .day-display {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    flex: 1;
+    text-align: center;
+  }
+  .clear-day-btn {
+    background: none;
+    border: 1px solid #2a0a0a;
+    border-radius: 6px;
+    color: #555;
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 6px 12px;
+    transition: all 0.2s;
+  }
+  .clear-day-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── Craving Modal ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid #1a3a1a;
+    border-radius: 12px;
+    padding: 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+  }
+  .modal-icon { font-size: 48px; margin-bottom: 16px; }
+  .modal-title {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--green-bright);
+    margin-bottom: 8px;
+  }
+  .modal-body {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .modal-quote {
+    background: var(--bg);
+    border-left: 3px solid var(--green-bright);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green-bright);
+    font-style: italic;
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  .modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .modal-yes { background: var(--green); border: none; border-radius: 6px; color: #fff; font-family: var(--mono); font-size: 12px; cursor: pointer; padding: 10px 20px; transition: all 0.2s; }
+  .modal-yes:hover { background: var(--green-dim); }
+  .modal-no { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-dim); font-family: var(--mono); font-size: 12px; cursor: pointer; padding: 10px 20px; transition: all 0.2s; }
+  .modal-no:hover { border-color: var(--red); color: var(--red); }
+
+  @media (max-width: 600px) {
+    .totals-grid { grid-template-columns: repeat(2, 1fr); }
+    .form-row, .form-col-label, .log-table-header, .log-entry, .ingredient-row, .meal-group-header, .meal-ing-entry {
+      grid-template-columns: 1fr;
+    }
+    .col-lbl, .th { display: none; }
+    .entry-val { text-align: left; }
+    .entry-val::before { content: attr(data-label) ': '; color: var(--text-muted); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo">FUEL</div>
+  <div class="date-display" id="headerDate"></div>
+</div>
+
+<!-- Motivation Bar -->
+<div class="motivation-bar">
+  <span class="icon">⚡</span>
+  <span class="motivation-text" id="quoteText"></span>
+  <button class="quote-btn" onclick="nextQuote()">↻ NEW</button>
+</div>
+
+<!-- Main -->
+<div class="container">
+
+  <!-- Day Navigation -->
+  <div class="day-controls">
+    <button class="day-nav" onclick="changeDay(-1)">‹</button>
+    <div class="day-display" id="dayDisplay"></div>
+    <button class="day-nav" onclick="changeDay(1)">›</button>
+    <button class="clear-day-btn" onclick="clearDay()">CLEAR DAY</button>
+  </div>
+
+  <!-- Totals -->
+  <div class="totals-grid">
+    <div class="total-card cal">
+      <div class="total-label">Calories</div>
+      <div class="total-value" id="totalCal">0</div>
+      <div class="total-unit">kcal</div>
+    </div>
+    <div class="total-card prot">
+      <div class="total-label">Protein</div>
+      <div class="total-value" id="totalProt">0</div>
+      <div class="total-unit">grams</div>
+    </div>
+    <div class="total-card carb">
+      <div class="total-label">Carbs</div>
+      <div class="total-value" id="totalCarb">0</div>
+      <div class="total-unit">grams</div>
+    </div>
+    <div class="total-card fat">
+      <div class="total-label">Fat</div>
+      <div class="total-value" id="totalFat">0</div>
+      <div class="total-unit">grams</div>
+    </div>
+  </div>
+
+  <!-- Goal Bar -->
+  <div class="goal-section">
+    <div class="goal-row">
+      <span class="goal-label">CALORIE GOAL</span>
+      <span class="goal-remaining" id="goalRemaining">-- kcal remaining</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="goalBar" style="width:0%"></div>
+    </div>
+    <div class="goal-edit-row">
+      <input type="number" class="goal-input" id="goalInput" placeholder="2000" />
+      <button class="goal-save-btn" onclick="saveGoal()">SET GOAL</button>
+    </div>
+  </div>
+
+  <!-- Craving Guard -->
+  <div class="craving-guard">
+    <div class="craving-icon">🔥</div>
+    <div class="craving-text">
+      <div class="craving-title">CRAVING SOMETHING?</div>
+      <div class="craving-sub">Check before you eat it -- your goals are worth more</div>
+    </div>
+    <button class="craving-btn" onclick="openCravingModal()">BEAT THE<br>CRAVING</button>
+  </div>
+
+  <!-- Log Section -->
+  <div class="section-header">
+    <span class="section-title">Today's Log</span>
+    <div style="display:flex;gap:8px;">
+      <button class="btn-green" onclick="toggleMealBuilder()">+ ADD MEAL</button>
+      <button class="btn-primary" onclick="toggleEntryForm()">+ ADD ITEM</button>
+    </div>
+  </div>
+
+  <!-- Quick Add Form -->
+  <div class="entry-form" id="entryForm">
+    <div class="form-col-label">
+      <div class="col-lbl">Food / Item</div>
+      <div class="col-lbl">Calories</div>
+      <div class="col-lbl">Protein (g)</div>
+      <div class="col-lbl">Carbs (g)</div>
+      <div class="col-lbl">Fat (g)</div>
+    </div>
+    <div class="form-row">
+      <input type="text" id="itemName" placeholder="e.g. Protein shake" />
+      <input type="number" id="itemCal" placeholder="138" />
+      <input type="number" id="itemProt" placeholder="25" />
+      <input type="number" id="itemCarb" placeholder="4" />
+      <input type="number" id="itemFat" placeholder="3" />
+    </div>
+    <div class="form-actions">
+      <button class="btn-ghost" onclick="toggleEntryForm()">Cancel</button>
+      <button class="btn-primary" onclick="addItem()">ADD ITEM</button>
+    </div>
+  </div>
+
+  <!-- Meal Builder -->
+  <div class="meal-builder" id="mealBuilder">
+    <div class="meal-builder-header">
+      <input type="text" class="meal-name-input" id="mealName" placeholder="Meal name (e.g. Post-Workout Meal)" />
+    </div>
+    <div class="form-col-label">
+      <div class="col-lbl">Ingredient</div>
+      <div class="col-lbl">Calories</div>
+      <div class="col-lbl">Protein (g)</div>
+      <div class="col-lbl">Carbs (g)</div>
+      <div class="col-lbl">Fat (g)</div>
+      <div class="col-lbl"></div>
+    </div>
+    <div class="meal-ingredients" id="mealIngredients"></div>
+    <div class="meal-sub-actions">
+      <button class="btn-ghost" onclick="addIngredientRow()">+ Add Ingredient</button>
+    </div>
+    <div class="meal-totals-preview" id="mealPreview">
+      <div class="meal-total-item">
+        <span class="meal-total-num" id="mPrevCal" style="color:var(--blue)">0</span>
+        <span class="meal-total-lbl">kcal</span>
+      </div>
+      <div class="meal-total-item">
+        <span class="meal-total-num" id="mPrevProt" style="color:var(--green-bright)">0</span>
+        <span class="meal-total-lbl">protein</span>
+      </div>
+      <div class="meal-total-item">
+        <span class="meal-total-num" id="mPrevCarb" style="color:#f59e0b">0</span>
+        <span class="meal-total-lbl">carbs</span>
+      </div>
+      <div class="meal-total-item">
+        <span class="meal-total-num" id="mPrevFat" style="color:#ef4444">0</span>
+        <span class="meal-total-lbl">fat</span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-ghost" onclick="toggleMealBuilder()">Cancel</button>
+      <button class="btn-green" onclick="addMeal()">ADD MEAL TO LOG</button>
+    </div>
+  </div>
+
+  <!-- Log Table -->
+  <div class="log-table">
+    <div class="log-table-header">
+      <div class="th">Item</div>
+      <div class="th">Cal</div>
+      <div class="th">Prot.</div>
+      <div class="th">Carb.</div>
+      <div class="th">Fat</div>
+      <div class="th"></div>
+    </div>
+    <div id="logEntries">
+      <div class="log-empty">No entries yet -- start logging your food above.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Craving Modal -->
+<div class="modal-overlay" id="cravingModal">
+  <div class="modal">
+    <div class="modal-icon">💪</div>
+    <div class="modal-title" id="modalTitle">HOLD UP.</div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-quote" id="modalQuote"></div>
+    <div class="modal-actions">
+      <button class="modal-yes" onclick="closeCravingModal()">✓ I'll skip it -- water it is</button>
+      <button class="modal-no" onclick="closeCravingModal()">Log it anyway</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────
+let currentDay = todayKey();
+let db = loadDB();
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function loadDB() {
+  try { return JSON.parse(localStorage.getItem('fuelDB') || '{}'); } catch { return {}; }
+}
+
+function saveDB() {
+  localStorage.setItem('fuelDB', JSON.stringify(db));
+}
+
+function getDayData(key) {
+  if (!db[key]) db[key] = { entries: [] };
+  return db[key];
+}
+
+// ─── Quotes ──────────────────────────────────────────────
+const quotes = [
+  "Discipline is choosing between what you want now and what you want most.",
+  "Every meal is a vote for the body you want to build.",
+  "The pain of discipline is nothing compared to the pain of regret.",
+  "Champions are built in the moments when you want to quit.",
+  "Your future self is watching. Make them proud.",
+  "One bad meal won't destroy your progress -- giving up will.",
+  "It never gets easier. You just get stronger.",
+  "Hunger is weakness leaving the body.",
+  "Results happen over time, not overnight. Stay the course.",
+  "Consistency > Perfection. Show up every single day.",
+  "The goal is to be better than yesterday. Nothing more.",
+  "You didn't come this far to only come this far.",
+  "Eat for the body you want, not the one you have.",
+  "Small wins compound into massive results. Trust the process.",
+  "You are what you repeatedly do. Make it count.",
+];
+let quoteIndex = Math.floor(Math.random() * quotes.length);
+
+function nextQuote() {
+  quoteIndex = (quoteIndex + 1) % quotes.length;
+  document.getElementById('quoteText').textContent = quotes[quoteIndex];
+}
+
+// ─── Craving Modal ───────────────────────────────────────
+const cravingMessages = [
+  { title: "HOLD UP.", body: "Before you eat that -- drink a full glass of water and wait 10 minutes. 90% of cravings disappear. You've worked too hard to blow it now." },
+  { title: "IS IT WORTH IT?", body: "Ask yourself: will I feel good about this in an hour? Grab a diet soda or sparkling water. The craving will pass -- your gains won't come back as fast." },
+  { title: "THINK ABOUT IT.", body: "Your body is performing. You're a footballer. Would you pour bad fuel into a race car? Water, black coffee, or diet soda -- pick one." },
+  { title: "PAUSE.", body: "You built this body through sweat and discipline. One craving doesn't define you -- how you respond to it does. Hydrate and move on." },
+  { title: "NOT TODAY.", body: "You're stronger than this craving. Walk away, drink water, and in 15 minutes you'll be glad you did. Future you says thank you." },
+];
+
+function openCravingModal() {
+  const msg = cravingMessages[Math.floor(Math.random() * cravingMessages.length)];
+  const quote = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('modalTitle').textContent = msg.title;
+  document.getElementById('modalBody').textContent = msg.body;
+  document.getElementById('modalQuote').textContent = `"${quote}"`;
+  document.getElementById('cravingModal').classList.add('visible');
+}
+
+function closeCravingModal() {
+  document.getElementById('cravingModal').classList.remove('visible');
+}
+
+// ─── Day Navigation ──────────────────────────────────────
+function changeDay(dir) {
+  const d = new Date(currentDay + 'T12:00:00');
+  d.setDate(d.getDate() + dir);
+  currentDay = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  render();
+}
+
+function clearDay() {
+  if (!confirm('Clear all entries for this day?')) return;
+  getDayData(currentDay).entries = [];
+  saveDB();
+  render();
+}
+
+// ─── Goal ────────────────────────────────────────────────
+function saveGoal() {
+  const v = parseInt(document.getElementById('goalInput').value);
+  if (!v || v < 1) return;
+  localStorage.setItem('fuelGoal', v);
+  updateGoalBar();
+}
+
+function getGoal() {
+  return parseInt(localStorage.getItem('fuelGoal') || '2000');
+}
+
+function updateGoalBar() {
+  const goal = getGoal();
+  document.getElementById('goalInput').value = goal;
+  const day = getDayData(currentDay);
+  const total = day.entries.reduce((s, e) => s + (e.cal || 0), 0);
+  const pct = Math.min((total / goal) * 100, 100);
+  const remaining = goal - total;
+  const bar = document.getElementById('goalBar');
+  const rem = document.getElementById('goalRemaining');
+  bar.style.width = pct + '%';
+  if (remaining < 0) {
+    bar.classList.add('over');
+    rem.classList.add('over');
+    rem.textContent = `${Math.abs(remaining)} kcal OVER goal`;
+  } else {
+    bar.classList.remove('over');
+    rem.classList.remove('over');
+    rem.textContent = `${remaining} kcal remaining`;
+  }
+}
+
+// ─── Forms ───────────────────────────────────────────────
+function toggleEntryForm() {
+  const f = document.getElementById('entryForm');
+  f.classList.toggle('visible');
+  if (f.classList.contains('visible')) {
+    document.getElementById('mealBuilder').classList.remove('visible');
+    document.getElementById('itemName').focus();
+  }
+}
+
+function toggleMealBuilder() {
+  const m = document.getElementById('mealBuilder');
+  m.classList.toggle('visible');
+  if (m.classList.contains('visible')) {
+    document.getElementById('entryForm').classList.remove('visible');
+    if (document.getElementById('mealIngredients').children.length === 0) {
+      addIngredientRow();
+      addIngredientRow();
+    }
+    document.getElementById('mealName').focus();
+  }
+}
+
+function addItem() {
+  const name = document.getElementById('itemName').value.trim();
+  const cal = parseFloat(document.getElementById('itemCal').value) || 0;
+  const prot = parseFloat(document.getElementById('itemProt').value) || 0;
+  const carb = parseFloat(document.getElementById('itemCarb').value) || 0;
+  const fat = parseFloat(document.getElementById('itemFat').value) || 0;
+  if (!name) { document.getElementById('itemName').focus(); return; }
+
+  getDayData(currentDay).entries.push({ type: 'item', name, cal, prot, carb, fat, id: Date.now() });
+  saveDB();
+
+  ['itemName','itemCal','itemProt','itemCarb','itemFat'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('itemName').focus();
+  render();
+}
+
+// ─── Meal Builder ─────────────────────────────────────────
+function addIngredientRow() {
+  const cont = document.getElementById('mealIngredients');
+  const id = 'ing_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+  const row = document.createElement('div');
+  row.className = 'ingredient-row';
+  row.id = id;
+  row.innerHTML = `
+    <input type="text" placeholder="Ingredient" oninput="updateMealPreview()" />
+    <input type="number" placeholder="kcal" oninput="updateMealPreview()" />
+    <input type="number" placeholder="prot" oninput="updateMealPreview()" />
+    <input type="number" placeholder="carb" oninput="updateMealPreview()" />
+    <input type="number" placeholder="fat" oninput="updateMealPreview()" />
+    <button class="remove-ing" onclick="removeIngRow('${id}')">✕</button>
+  `;
+  cont.appendChild(row);
+}
+
+function removeIngRow(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  updateMealPreview();
+}
+
+function getMealIngredients() {
+  const rows = document.getElementById('mealIngredients').querySelectorAll('.ingredient-row');
+  return Array.from(rows).map(row => {
+    const inputs = row.querySelectorAll('input');
+    return {
+      name: inputs[0].value.trim(),
+      cal: parseFloat(inputs[1].value) || 0,
+      prot: parseFloat(inputs[2].value) || 0,
+      carb: parseFloat(inputs[3].value) || 0,
+      fat: parseFloat(inputs[4].value) || 0,
+    };
+  }).filter(i => i.name || i.cal);
+}
+
+function updateMealPreview() {
+  const ings = getMealIngredients();
+  const totals = ings.reduce((acc, i) => {
+    acc.cal += i.cal; acc.prot += i.prot; acc.carb += i.carb; acc.fat += i.fat; return acc;
+  }, { cal: 0, prot: 0, carb: 0, fat: 0 });
+  document.getElementById('mPrevCal').textContent = Math.round(totals.cal);
+  document.getElementById('mPrevProt').textContent = Math.round(totals.prot);
+  document.getElementById('mPrevCarb').textContent = Math.round(totals.carb);
+  document.getElementById('mPrevFat').textContent = Math.round(totals.fat);
+}
+
+function addMeal() {
+  const mealName = document.getElementById('mealName').value.trim() || 'Meal';
+  const ingredients = getMealIngredients();
+  if (ingredients.length === 0) return;
+
+  const totals = ingredients.reduce((acc, i) => {
+    acc.cal += i.cal; acc.prot += i.prot; acc.carb += i.carb; acc.fat += i.fat; return acc;
+  }, { cal: 0, prot: 0, carb: 0, fat: 0 });
+
+  getDayData(currentDay).entries.push({
+    type: 'meal',
+    name: mealName,
+    ingredients,
+    cal: totals.cal,
+    prot: totals.prot,
+    carb: totals.carb,
+    fat: totals.fat,
+    id: Date.now()
+  });
+  saveDB();
+
+  document.getElementById('mealName').value = '';
+  document.getElementById('mealIngredients').innerHTML = '';
+  document.getElementById('mealBuilder').classList.remove('visible');
+  updateMealPreview();
+  render();
+}
+
+// ─── Render ───────────────────────────────────────────────
+function render() {
+  const day = getDayData(currentDay);
+  const entries = day.entries;
+
+  // Day display
+  const d = new Date(currentDay + 'T12:00:00');
+  const isToday = currentDay === todayKey();
+  const dayStr = isToday ? 'Today -- ' : '';
+  document.getElementById('dayDisplay').textContent = dayStr + d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Totals
+  const totals = entries.reduce((acc, e) => {
+    acc.cal += e.cal || 0; acc.prot += e.prot || 0; acc.carb += e.carb || 0; acc.fat += e.fat || 0; return acc;
+  }, { cal: 0, prot: 0, carb: 0, fat: 0 });
+
+  document.getElementById('totalCal').textContent = Math.round(totals.cal);
+  document.getElementById('totalProt').textContent = Math.round(totals.prot);
+  document.getElementById('totalCarb').textContent = Math.round(totals.carb);
+  document.getElementById('totalFat').textContent = Math.round(totals.fat);
+
+  updateGoalBar();
+
+  // Entries
+  const cont = document.getElementById('logEntries');
+  if (entries.length === 0) {
+    cont.innerHTML = '<div class="log-empty">No entries yet -- start logging your food above.</div>';
+    return;
+  }
+
+  cont.innerHTML = entries.map(e => {
+    if (e.type === 'meal') {
+      const ings = (e.ingredients || []).map(i => `
+        <div class="meal-ing-entry">
+          <div class="meal-ing-name">↳ ${i.name || '--'}</div>
+          <div class="entry-val cal" data-label="Cal">${Math.round(i.cal)}</div>
+          <div class="entry-val prot" data-label="Prot">${Math.round(i.prot)}g</div>
+          <div class="entry-val carb" data-label="Carb">${Math.round(i.carb)}g</div>
+          <div class="entry-val fat" data-label="Fat">${Math.round(i.fat)}g</div>
+          <div></div>
+        </div>
+      `).join('');
+      return `
+        <div class="meal-group-header">
+          <div class="meal-group-name">🍽 ${e.name}</div>
+          <div class="meal-group-val cal">${Math.round(e.cal)}</div>
+          <div class="meal-group-val prot">${Math.round(e.prot)}g</div>
+          <div class="meal-group-val carb">${Math.round(e.carb)}g</div>
+          <div class="meal-group-val fat">${Math.round(e.fat)}g</div>
+          <button class="del-btn" onclick="deleteEntry(${e.id})">✕</button>
+        </div>
+        ${ings}
+      `;
+    } else {
+      return `
+        <div class="log-entry">
+          <div>
+            <div class="entry-name">${e.name}</div>
+          </div>
+          <div class="entry-val cal" data-label="Cal">${Math.round(e.cal)}</div>
+          <div class="entry-val prot" data-label="Prot">${Math.round(e.prot)}g</div>
+          <div class="entry-val carb" data-label="Carb">${Math.round(e.carb)}g</div>
+          <div class="entry-val fat" data-label="Fat">${Math.round(e.fat)}g</div>
+          <button class="del-btn" onclick="deleteEntry(${e.id})">✕</button>
+        </div>
+      `;
+    }
+  }).join('');
+}
+
+function deleteEntry(id) {
+  const day = getDayData(currentDay);
+  day.entries = day.entries.filter(e => e.id !== id);
+  saveDB();
+  render();
+}
+
+// ─── Init ─────────────────────────────────────────────────
+function init() {
+  // Date header
+  const now = new Date();
+  document.getElementById('headerDate').textContent =
+    now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+
+  // Quote
+  document.getElementById('quoteText').textContent = quotes[quoteIndex];
+
+  // Goal
+  document.getElementById('goalInput').value = getGoal();
+
+  render();
+}
+
+// Enter key on item form
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('entryForm').classList.contains('visible')) {
+    addItem();
+  }
+});
+
+init();
+</script>
+</body>
+</html>
