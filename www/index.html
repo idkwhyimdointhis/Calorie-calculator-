@@ -19,73 +19,38 @@
   --amber: #f59e0b;
   --red: #dc2626;
   --red-b: #ef4444;
+  --purple: #a855f7;
   --text: #e8e8e8;
   --muted: #555;
   --dim: #888;
   --mono: 'Space Mono', monospace;
   --sans: 'Syne', sans-serif;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); width: 100vw; height: 100dvh; overflow: hidden; }
+#app { display: flex; flex-direction: column; height: 100dvh; }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  width: 100vw;
-  height: 100dvh;
-  overflow: hidden;
-}
-
-/* ══ LAYOUT ══ */
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;
-}
-
-.t-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 13px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
+/* HEADER */
+.t-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .logo { font-family: var(--sans); font-weight: 800; font-size: 16px; letter-spacing: 6px; color: var(--green-b); }
 .hdr-right { display: flex; align-items: center; gap: 10px; }
 .t-date { font-family: var(--mono); font-size: 10px; color: var(--muted); }
-.streak-badge {
-  font-family: var(--mono); font-size: 10px;
-  background: #0a1a0a; border: 1px solid #1a3a1a;
-  border-radius: 20px; padding: 3px 9px;
-  color: var(--green-b); letter-spacing: 1px;
-}
+.streak-badge { font-family: var(--mono); font-size: 10px; background: #0a1a0a; border: 1px solid #1a3a1a; border-radius: 20px; padding: 3px 9px; color: var(--green-b); letter-spacing: 1px; }
+.hdr-kcal { font-family: var(--mono); font-size: 10px; color: var(--dim); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 9px; }
+.hdr-kcal.good { color: var(--green-b); border-color: #1a3a1a; background: #0a1a0a; }
+.hdr-kcal.over { color: var(--red-b); border-color: #3a1a1a; background: #1a0a0a; }
 
-/* ══ TABS ══ */
-.tabs {
-  display: flex;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-}
-.tab {
-  flex: 1; padding: 10px 6px;
-  background: none; border: none;
-  font-family: var(--mono); font-size: 9px;
-  color: var(--muted); letter-spacing: 1.5px;
-  cursor: pointer; transition: all 0.2s;
-  border-bottom: 2px solid transparent;
-}
+/* TABS */
+.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.tab { flex: 1; padding: 10px 6px; background: none; border: none; font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1.5px; cursor: pointer; transition: all 0.2s; border-bottom: 2px solid transparent; }
 .tab.active { color: var(--green-b); border-bottom-color: var(--green-b); }
 
-/* ══ SCROLL ══ */
+/* SCROLL */
 .t-scroll { flex: 1; overflow-y: auto; padding: 13px 13px 80px; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
-/* ══ DAY NAV ══ */
+/* DAY NAV */
 .day-row { display: flex; align-items: center; gap: 7px; margin-bottom: 13px; }
 .dnav { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--dim); cursor: pointer; font-size: 16px; padding: 6px 11px; flex-shrink: 0; transition: all 0.2s; }
 .dnav:hover { border-color: var(--blue); color: var(--blue-b); }
@@ -93,7 +58,7 @@ body {
 .dclear { background: none; border: 1px solid #1a0a0a; border-radius: 6px; color: #444; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 6px 9px; flex-shrink: 0; transition: all 0.2s; }
 .dclear:hover { border-color: var(--red); color: var(--red); }
 
-/* ══ TOTALS ══ */
+/* TOTALS */
 .tots { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
 .tc { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 10px 7px; text-align: center; position: relative; overflow: hidden; }
 .tc::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
@@ -109,7 +74,19 @@ body {
 .tc.fat .tv { color: var(--red-b); }
 .tu { font-family: var(--mono); font-size: 8px; color: var(--muted); }
 
-/* ══ MACRO GOALS ══ */
+/* WATER TRACKER */
+.water-c { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 11px 13px; margin-bottom: 12px; }
+.water-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.water-title { font-family: var(--mono); font-size: 9px; color: #38bdf8; letter-spacing: 2px; }
+.water-count { font-family: var(--mono); font-size: 9px; color: var(--dim); }
+.water-glasses { display: flex; gap: 5px; align-items: center; }
+.glass-btn { background: none; border: 1px solid #1c3040; border-radius: 4px; font-size: 14px; width: 30px; height: 30px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.glass-btn.filled { background: #0a1f2f; border-color: #38bdf8; }
+.glass-btn:hover { border-color: #38bdf8; }
+.water-goal-edit { font-family: var(--mono); font-size: 9px; color: var(--muted); cursor: pointer; background: none; border: none; padding: 2px 5px; }
+.water-goal-edit:hover { color: var(--dim); }
+
+/* MACRO GOALS */
 .goals-c { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 12px 13px; margin-bottom: 12px; }
 .goals-title { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 10px; }
 .goal-row { margin-bottom: 7px; }
@@ -129,7 +106,6 @@ body {
 .gfill.crb { background: var(--amber); }
 .gfill.fat { background: var(--red-b); }
 .gfill.over { background: var(--red); }
-
 .goals-edit { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; display: none; }
 .goals-edit.open { display: block; }
 .goals-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; margin-bottom: 8px; }
@@ -143,17 +119,16 @@ body {
 .gsave { background: none; border: 1px solid #1d4ed8; border-radius: 5px; color: var(--blue-b); font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 5px 12px; transition: all 0.2s; }
 .gsave:hover { background: var(--blue); color: #fff; }
 
-/* ══ CRAVING ══ */
+/* CRAVING */
 .crav-c { background: #0a120a; border: 1px solid #162016; border-radius: 7px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
 .crav-ttl { font-weight: 700; font-size: 12px; color: var(--green-b); margin-bottom: 1px; }
 .crav-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); }
 .crav-btn { background: #0f1f0f; border: 1px solid #1a3a1a; border-radius: 6px; color: var(--green-b); font-family: var(--mono); font-size: 9px; cursor: pointer; padding: 7px 9px; text-align: center; line-height: 1.4; flex-shrink: 0; transition: all 0.2s; }
 
-/* ══ LOG HEADER ══ */
+/* LOG HEADER */
 .shdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
 .stitle { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-.brow { display: flex; gap: 5px; }
-
+.brow { display: flex; gap: 5px; flex-wrap: wrap; }
 .bblu { background: var(--blue); border: none; border-radius: 6px; color: #fff; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 10px; letter-spacing: 1px; transition: all 0.2s; }
 .bblu:hover { background: #1d4ed8; }
 .bgrn { background: var(--green); border: none; border-radius: 6px; color: #fff; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 10px; letter-spacing: 1px; transition: all 0.2s; }
@@ -162,24 +137,15 @@ body {
 .bgst:hover { border-color: var(--dim); color: var(--text); }
 .bamb { background: none; border: 1px solid #4a3000; border-radius: 6px; color: var(--amber); font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 10px; letter-spacing: 1px; transition: all 0.2s; }
 .bamb:hover { background: #1a1000; }
+.bpur { background: none; border: 1px solid #3b1a5a; border-radius: 6px; color: var(--purple); font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 10px; letter-spacing: 1px; transition: all 0.2s; }
+.bpur:hover { background: #1a0a2a; }
+.bcam { background: none; border: 1px solid #1a2a3a; border-radius: 6px; color: #38bdf8; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 10px; letter-spacing: 1px; transition: all 0.2s; }
+.bcam:hover { background: #0a1520; }
 
-/* ══ FORMS ══ */
-input[type="text"], input[type="number"] {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 5px;
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 12px;
-  padding: 8px 9px;
-  width: 100%;
-  transition: border-color 0.2s;
-  -moz-appearance: textfield;
-}
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+/* FORMS */
+input[type="text"], input[type="number"] { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: var(--mono); font-size: 12px; padding: 8px 9px; width: 100%; transition: border-color 0.2s; -moz-appearance: textfield; }
+input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
 input:focus { outline: none; border-color: var(--blue); }
-
 .fcard { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 13px; margin-bottom: 9px; display: none; }
 .fcard.open { display: block; }
 .flbl { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-bottom: 4px; display: block; }
@@ -195,7 +161,18 @@ input:focus { outline: none; border-color: var(--blue); }
 .save-toggle input[type="checkbox"] { accent-color: var(--amber); width: 14px; height: 14px; cursor: pointer; }
 .save-toggle label { font-family: var(--mono); font-size: 10px; color: var(--amber); cursor: pointer; }
 
-/* Meal builder */
+/* PHOTO PREVIEW in log form */
+.photo-row { margin-bottom: 9px; }
+.photo-row label.flbl { margin-bottom: 5px; }
+.photo-actions { display: flex; gap: 6px; margin-bottom: 6px; }
+.photo-btn { flex: 1; background: none; border: 1px solid #1a2a3a; border-radius: 5px; color: #38bdf8; font-family: var(--mono); font-size: 9px; cursor: pointer; padding: 7px 6px; text-align: center; transition: all 0.2s; }
+.photo-btn:hover { background: #0a1520; }
+.photo-preview { width: 100%; max-height: 140px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); display: none; }
+.photo-preview.show { display: block; }
+.photo-clear { background: none; border: none; color: var(--muted); font-family: var(--mono); font-size: 9px; cursor: pointer; padding: 3px 0; }
+.photo-clear:hover { color: var(--red); }
+
+/* MEAL BUILDER */
 .mcard { background: var(--surface); border: 1px solid #162016; border-radius: 7px; padding: 13px; margin-bottom: 9px; display: none; }
 .mcard.open { display: block; }
 .mninp { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: var(--sans); font-weight: 700; font-size: 13px; padding: 8px 11px; width: 100%; margin-bottom: 11px; }
@@ -208,10 +185,9 @@ input:focus { outline: none; border-color: var(--blue); }
 .mpv { font-family: var(--mono); font-size: 14px; font-weight: 700; }
 .mpl { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; }
 
-/* ══ LOG ══ */
+/* LOG */
 .log-w { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; overflow: hidden; }
 .lempty { padding: 32px 16px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); }
-
 .lentry { padding: 10px 13px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
 .lentry:last-child { border-bottom: none; }
 .lentry:hover { background: var(--surface2); }
@@ -228,8 +204,9 @@ input:focus { outline: none; border-color: var(--blue); }
 .ldel:hover { border-color: var(--red); color: var(--red); background: #1a0a0a; }
 .ledit { background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); cursor: pointer; font-family: var(--mono); font-size: 9px; padding: 3px 7px; transition: all 0.15s; flex-shrink: 0; }
 .ledit:hover { border-color: var(--blue); color: var(--blue-b); background: #0a0f1a; }
+.lphoto { width: 100%; max-height: 120px; object-fit: cover; border-radius: 5px; margin-top: 6px; border: 1px solid var(--border); }
 
-/* Meal group */
+/* MEAL GROUP */
 .mghdr { padding: 9px 13px 7px; background: #0a150a; border-bottom: 1px solid #162016; display: flex; align-items: center; justify-content: space-between; }
 .mgl { flex: 1; }
 .mgn { font-family: var(--sans); font-weight: 700; font-size: 12px; color: var(--green-b); text-transform: uppercase; letter-spacing: 1px; }
@@ -245,15 +222,10 @@ input:focus { outline: none; border-color: var(--blue); }
 .mgin { font-family: var(--mono); font-size: 11px; color: var(--dim); }
 .mgic { font-family: var(--mono); font-size: 11px; color: var(--blue-b); }
 
-/* ══ SAVED MEALS TAB ══ */
+/* SAVED */
 .saved-list { display: flex; flex-direction: column; gap: 8px; }
 .saved-empty { padding: 40px 16px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); line-height: 1.8; }
-.saved-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px 13px;
-  display: flex; align-items: center; gap: 10px;
-  transition: border-color 0.2s;
-}
+.saved-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 13px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
 .saved-card:hover { border-color: #2a2a2a; }
 .saved-info { flex: 1; min-width: 0; }
 .saved-name { font-family: var(--sans); font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -270,13 +242,9 @@ input:focus { outline: none; border-color: var(--blue); }
 .sdel:hover { border-color: var(--red); color: var(--red); }
 .saved-type { font-family: var(--mono); font-size: 8px; color: var(--muted); letter-spacing: 1px; margin-bottom: 3px; }
 
-/* ══ HISTORY TAB ══ */
+/* HISTORY */
 .hist-week { display: flex; gap: 5px; margin-bottom: 14px; }
-.hist-day {
-  flex: 1; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; padding: 8px 4px; text-align: center; cursor: pointer;
-  transition: all 0.2s;
-}
+.hist-day { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 4px; text-align: center; cursor: pointer; transition: all 0.2s; }
 .hist-day.today { border-color: var(--blue-b); }
 .hist-day.hit { border-color: var(--green-b); }
 .hist-day:hover { border-color: #333; }
@@ -286,19 +254,12 @@ input:focus { outline: none; border-color: var(--blue); }
 .hd-bar.hit { background: var(--green-b); }
 .hd-bar.over { background: var(--red-b); }
 .hd-cal { font-family: var(--mono); font-size: 8px; color: var(--dim); }
-
 .hist-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; margin-bottom: 14px; }
 .hstat { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 11px 8px; text-align: center; }
 .hstat-v { font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--green-b); }
 .hstat-l { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
-
 .hist-list { display: flex; flex-direction: column; gap: 6px; }
-.hist-entry {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 6px; padding: 10px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  cursor: pointer; transition: all 0.2s;
-}
+.hist-entry { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s; }
 .hist-entry:hover { border-color: #2a2a2a; background: var(--surface2); }
 .hist-entry.hit { border-left: 3px solid var(--green-b); }
 .hist-entry.miss { border-left: 3px solid var(--border); }
@@ -307,7 +268,87 @@ input:focus { outline: none; border-color: var(--blue); }
 .he-status { font-family: var(--mono); font-size: 9px; color: var(--muted); }
 .he-status.hit { color: var(--green-b); }
 
-/* ══ MODAL ══ */
+/* MACRO TREND CHART */
+.trend-c { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 12px; margin-bottom: 14px; }
+.trend-title { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 10px; }
+.trend-legend { display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.trend-leg-item { display: flex; align-items: center; gap: 4px; font-family: var(--mono); font-size: 8px; color: var(--dim); }
+.trend-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.trend-chart { position: relative; height: 80px; }
+canvas.trend-canvas { width: 100%; height: 80px; }
+
+/* WEEKLY/MONTHLY SUMMARY */
+.summary-c { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 12px 13px; margin-bottom: 14px; }
+.summary-title { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+.sum-tabs { display: flex; gap: 4px; }
+.sum-tab { background: none; border: 1px solid var(--border); border-radius: 4px; font-family: var(--mono); font-size: 8px; color: var(--muted); cursor: pointer; padding: 3px 7px; transition: all 0.2s; }
+.sum-tab.active { border-color: var(--green-b); color: var(--green-b); }
+.sum-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
+.sum-cell { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 8px 7px; text-align: center; }
+.sum-val { font-family: var(--mono); font-size: 14px; font-weight: 700; color: var(--green-b); }
+.sum-lbl { font-family: var(--mono); font-size: 8px; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+/* AI ASSISTANT MODAL */
+.ai-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 400; display: none; flex-direction: column; }
+.ai-modal-bg.open { display: flex; }
+.ai-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.ai-title { font-family: var(--sans); font-weight: 800; font-size: 14px; color: var(--purple); letter-spacing: 3px; }
+.ai-close { background: none; border: none; color: var(--muted); font-size: 20px; cursor: pointer; padding: 2px 6px; }
+.ai-close:hover { color: var(--text); }
+.ai-chat { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.ai-msg { max-width: 90%; }
+.ai-msg.user { align-self: flex-end; }
+.ai-msg.bot { align-self: flex-start; }
+.ai-bubble { border-radius: 10px; padding: 10px 13px; font-family: var(--mono); font-size: 11px; line-height: 1.6; }
+.ai-msg.user .ai-bubble { background: #1d3a7a; color: #c0d8ff; border-bottom-right-radius: 2px; }
+.ai-msg.bot .ai-bubble { background: #1a0a3a; border: 1px solid #3b1a5a; color: var(--text); border-bottom-left-radius: 2px; }
+.ai-bubble.loading { color: var(--muted); }
+.ai-bubble.loading::after { content: '...'; animation: dots 1.2s steps(3,end) infinite; }
+@keyframes dots { 0%,33%{content:'.'} 34%,66%{content:'..'} 67%,100%{content:'...'} }
+.ai-result-card { background: #0a0f1a; border: 1px solid #1a2a4a; border-radius: 7px; padding: 10px 12px; margin-top: 8px; }
+.ai-result-title { font-family: var(--sans); font-weight: 700; font-size: 12px; color: var(--blue-b); margin-bottom: 6px; }
+.ai-macros { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.ai-mac { display: flex; flex-direction: column; align-items: center; }
+.ai-mac-v { font-family: var(--mono); font-size: 16px; font-weight: 700; }
+.ai-mac-l { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; }
+.ai-log-btn { background: var(--green); border: none; border-radius: 6px; color: #fff; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 7px 14px; width: 100%; letter-spacing: 1px; transition: all 0.2s; }
+.ai-log-btn:hover { background: var(--green-d); }
+.ai-img-preview { width: 100%; max-height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 8px; }
+.ai-input-row { background: var(--surface); border-top: 1px solid var(--border); padding: 10px 12px; display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
+.ai-input-row textarea { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; color: var(--text); font-family: var(--mono); font-size: 11px; padding: 8px 10px; resize: none; height: 40px; max-height: 100px; outline: none; transition: border-color 0.2s; line-height: 1.5; overflow: hidden; }
+.ai-input-row textarea:focus { border-color: var(--purple); }
+.ai-send { background: var(--purple); border: none; border-radius: 7px; color: #fff; font-family: var(--mono); font-size: 10px; cursor: pointer; padding: 10px 12px; flex-shrink: 0; transition: all 0.2s; }
+.ai-send:hover { background: #9333ea; }
+.ai-cam-btn { background: none; border: 1px solid #3b1a5a; border-radius: 7px; color: var(--purple); font-size: 16px; cursor: pointer; padding: 8px 10px; flex-shrink: 0; transition: all 0.2s; }
+.ai-cam-btn:hover { background: #1a0a2a; }
+.ai-hint { font-family: var(--mono); font-size: 9px; color: var(--muted); padding: 4px 0; text-align: center; }
+
+/* LABEL SCAN MODAL */
+.scan-modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 450; display: none; flex-direction: column; }
+.scan-modal-bg.open { display: flex; }
+.scan-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.scan-title { font-family: var(--sans); font-weight: 800; font-size: 14px; color: #38bdf8; letter-spacing: 3px; }
+.scan-body { flex: 1; overflow-y: auto; padding: 14px; }
+.scan-preview { width: 100%; max-height: 200px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; display: none; }
+.scan-preview.show { display: block; }
+.scan-placeholder { background: var(--surface); border: 2px dashed var(--border); border-radius: 8px; padding: 30px 20px; text-align: center; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+.scan-placeholder:hover { border-color: #38bdf8; }
+.scan-ph-icon { font-size: 32px; margin-bottom: 8px; }
+.scan-ph-text { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1.7; }
+.scan-actions { display: flex; gap: 7px; margin-bottom: 12px; }
+.scan-result { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: none; }
+.scan-result.show { display: block; }
+.scan-food-name { font-family: var(--sans); font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+.scan-serving { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 12px; }
+.scan-macros { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 12px; }
+.scan-mac { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 8px 5px; text-align: center; }
+.scan-mac-v { font-family: var(--mono); font-size: 15px; font-weight: 700; }
+.scan-mac-l { font-family: var(--mono); font-size: 8px; color: var(--muted); text-transform: uppercase; }
+.scan-log-btn { background: #38bdf8; border: none; border-radius: 6px; color: #000; font-family: var(--mono); font-size: 10px; font-weight: 700; cursor: pointer; padding: 10px; width: 100%; letter-spacing: 1px; transition: all 0.2s; }
+.scan-log-btn:hover { background: #0ea5e9; }
+.scan-note { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top: 8px; text-align: center; line-height: 1.6; }
+
+/* MODAL */
 .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
 .modal-bg.open { display: flex; }
 .modal { background: var(--surface); border: 1px solid #162016; border-radius: 12px; padding: 24px 20px; max-width: 360px; width: 100%; text-align: center; }
@@ -319,25 +360,27 @@ input:focus { outline: none; border-color: var(--blue); }
 .myes { background: var(--green); border: none; border-radius: 6px; color: #fff; font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 10px 16px; }
 .mno { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--dim); font-family: var(--mono); font-size: 11px; cursor: pointer; padding: 10px 14px; }
 
-/* Edit modal */
+/* EDIT MODAL */
 .edit-modal { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; max-width: 360px; width: 100%; }
 .edit-title { font-family: var(--sans); font-weight: 800; font-size: 15px; color: var(--text); margin-bottom: 14px; letter-spacing: 1px; }
 .edit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
 .edit-full { margin-bottom: 8px; }
 .edit-actions { display: flex; gap: 7px; justify-content: flex-end; margin-top: 12px; }
 
-/* ══ TOAST ══ */
-.toast {
-  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
-  background: #111; border: 1px solid var(--green-b);
-  border-radius: 20px; padding: 8px 16px;
-  font-family: var(--mono); font-size: 11px; color: var(--green-b);
-  z-index: 500; opacity: 0; transition: all 0.3s; pointer-events: none;
-  white-space: nowrap;
-}
+/* COPY YESTERDAY BANNER */
+.copy-banner { background: #0a1a0a; border: 1px solid #1a3a1a; border-radius: 7px; padding: 9px 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+.copy-banner-text { font-family: var(--mono); font-size: 9px; color: var(--dim); }
+.copy-banner-text span { color: var(--green-b); }
+.copy-btn { background: none; border: 1px solid #1a3a1a; border-radius: 5px; color: var(--green-b); font-family: var(--mono); font-size: 9px; cursor: pointer; padding: 5px 10px; transition: all 0.2s; }
+.copy-btn:hover { background: #0f2f0f; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: #111; border: 1px solid var(--green-b); border-radius: 20px; padding: 8px 16px; font-family: var(--mono); font-size: 11px; color: var(--green-b); z-index: 500; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* scrollbar */
+/* HIDDEN FILE INPUTS */
+.hidden-input { display: none; }
+
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
@@ -350,8 +393,8 @@ input:focus { outline: none; border-color: var(--blue); }
   <div class="t-header">
     <div class="logo">FUEL</div>
     <div class="hdr-right">
+      <div class="hdr-kcal" id="hdrKcal">-- kcal left</div>
       <div class="streak-badge" id="streakBadge">🔥 0 DAY</div>
-      <div class="t-date" id="hdrDate"></div>
     </div>
   </div>
 
@@ -381,6 +424,18 @@ input:focus { outline: none; border-color: var(--blue); }
         <div class="tc pro"><div class="tl">Protein</div><div class="tv" id="tProt">0</div><div class="tu">g</div></div>
         <div class="tc crb"><div class="tl">Carbs</div><div class="tv" id="tCarb">0</div><div class="tu">g</div></div>
         <div class="tc fat"><div class="tl">Fat</div><div class="tv" id="tFat">0</div><div class="tu">g</div></div>
+      </div>
+
+      <!-- Water Tracker -->
+      <div class="water-c">
+        <div class="water-top">
+          <div class="water-title">💧 WATER</div>
+          <div style="display:flex;align-items:center;gap:7px">
+            <div class="water-count" id="waterCount">0 / 8 glasses</div>
+            <button class="water-goal-edit" onclick="promptWaterGoal()">⚙</button>
+          </div>
+        </div>
+        <div class="water-glasses" id="waterGlasses"></div>
       </div>
 
       <!-- Goal bars -->
@@ -433,14 +488,34 @@ input:focus { outline: none; border-color: var(--blue); }
       <div class="shdr">
         <span class="stitle">Today's Log</span>
         <div class="brow">
-          <button class="bamb" onclick="switchTab('saved')" title="Add from saved">⭐ SAVED</button>
+          <button class="bamb" onclick="switchTab('saved')" title="Add from saved">⭐</button>
+          <button class="bcam" onclick="openScanModal()" title="Scan food label">📷 SCAN</button>
+          <button class="bpur" onclick="openAI()" title="AI calorie assistant">✦ AI</button>
           <button class="bgrn" onclick="togMeal()">+ MEAL</button>
           <button class="bblu" onclick="togItem()">+ ITEM</button>
         </div>
       </div>
 
+      <!-- Copy yesterday banner -->
+      <div class="copy-banner" id="copyBanner" style="display:none">
+        <span class="copy-banner-text">Copy <span id="copyFromDay">yesterday</span>'s log?</span>
+        <button class="copy-btn" onclick="copyYesterday()">COPY</button>
+      </div>
+
       <!-- Quick Add Item Form -->
       <div class="fcard" id="itemF">
+        <!-- Photo row -->
+        <div class="photo-row">
+          <label class="flbl">📸 PHOTO (optional)</label>
+          <div class="photo-actions">
+            <button class="photo-btn" onclick="document.getElementById('itemCamInput').click()">📷 Camera</button>
+            <button class="photo-btn" onclick="document.getElementById('itemGallInput').click()">🖼 Gallery</button>
+          </div>
+          <img class="photo-preview" id="itemPhotoPreview" src="" alt="food photo" />
+          <button class="photo-clear" id="itemPhotoClear" onclick="clearItemPhoto()" style="display:none">✕ Remove photo</button>
+          <input type="file" id="itemCamInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleItemPhoto(event)" />
+          <input type="file" id="itemGallInput" class="hidden-input" accept="image/*" onchange="handleItemPhoto(event)" />
+        </div>
         <label class="flbl">FOOD NAME</label>
         <div class="fmain">
           <input type="text" id="fn" placeholder="e.g. Protein shake" />
@@ -467,11 +542,21 @@ input:focus { outline: none; border-color: var(--blue); }
 
       <!-- Meal Builder Form -->
       <div class="mcard" id="mealF">
+        <!-- Photo row -->
+        <div class="photo-row">
+          <label class="flbl">📸 MEAL PHOTO (optional)</label>
+          <div class="photo-actions">
+            <button class="photo-btn" onclick="document.getElementById('mealCamInput').click()">📷 Camera</button>
+            <button class="photo-btn" onclick="document.getElementById('mealGallInput').click()">🖼 Gallery</button>
+          </div>
+          <img class="photo-preview" id="mealPhotoPreview" src="" alt="meal photo" />
+          <button class="photo-clear" id="mealPhotoClear" onclick="clearMealPhoto()" style="display:none">✕ Remove photo</button>
+          <input type="file" id="mealCamInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleMealPhoto(event)" />
+          <input type="file" id="mealGallInput" class="hidden-input" accept="image/*" onchange="handleMealPhoto(event)" />
+        </div>
         <input type="text" class="mninp" id="mname" placeholder="Meal name (e.g. Post-Workout)" />
         <label class="flbl">MEAL TOTAL CALORIES (optional -- auto-calculated)</label>
-        <div style="margin-bottom:9px">
-          <input type="number" id="mCal" placeholder="Leave blank to sum ingredients" />
-        </div>
+        <div style="margin-bottom:9px"><input type="number" id="mCal" placeholder="Leave blank to sum ingredients" /></div>
         <div class="mtoggle">
           <input type="checkbox" id="mmc" onchange="togMMacro()" />
           <label for="mmc">I know the macros for this whole meal</label>
@@ -519,6 +604,31 @@ input:focus { outline: none; border-color: var(--blue); }
     <div class="tab-panel" id="tab-history">
       <div class="hist-stats" id="histStats"></div>
       <div class="hist-week" id="histWeek"></div>
+
+      <!-- Macro trend chart -->
+      <div class="trend-c">
+        <div class="trend-title">7-DAY MACRO TREND</div>
+        <div class="trend-legend">
+          <div class="trend-leg-item"><div class="trend-dot" style="background:var(--blue-b)"></div>Calories</div>
+          <div class="trend-leg-item"><div class="trend-dot" style="background:var(--green-b)"></div>Protein</div>
+          <div class="trend-leg-item"><div class="trend-dot" style="background:var(--amber)"></div>Carbs</div>
+          <div class="trend-leg-item"><div class="trend-dot" style="background:var(--red-b)"></div>Fat</div>
+        </div>
+        <div class="trend-chart"><canvas class="trend-canvas" id="trendCanvas"></canvas></div>
+      </div>
+
+      <!-- Weekly / Monthly summary -->
+      <div class="summary-c">
+        <div class="summary-title">
+          <span>SUMMARY</span>
+          <div class="sum-tabs">
+            <button class="sum-tab active" id="sumWeekBtn" onclick="switchSummary('week')">WEEK</button>
+            <button class="sum-tab" id="sumMonthBtn" onclick="switchSummary('month')">MONTH</button>
+          </div>
+        </div>
+        <div class="sum-grid" id="summaryGrid"></div>
+      </div>
+
       <div style="font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:8px">RECENT DAYS</div>
       <div class="hist-list" id="histList"></div>
     </div>
@@ -526,7 +636,7 @@ input:focus { outline: none; border-color: var(--blue); }
   </div>
 </div>
 
-<!-- Craving Modal -->
+<!-- ══════ CRAVING MODAL ══════ -->
 <div class="modal-bg" id="cravM">
   <div class="modal">
     <div class="mico">💪</div>
@@ -540,19 +650,13 @@ input:focus { outline: none; border-color: var(--blue); }
   </div>
 </div>
 
-<!-- Edit Modal -->
+<!-- ══════ EDIT MODAL ══════ -->
 <div class="modal-bg" id="editM">
   <div class="edit-modal">
     <div class="edit-title">EDIT ENTRY</div>
     <input type="hidden" id="editId" />
-    <div class="edit-full">
-      <label class="flbl">NAME</label>
-      <input type="text" id="eName" />
-    </div>
-    <div class="edit-full">
-      <label class="flbl">CALORIES (kcal)</label>
-      <input type="number" id="eCal" />
-    </div>
+    <div class="edit-full"><label class="flbl">NAME</label><input type="text" id="eName" /></div>
+    <div class="edit-full"><label class="flbl">CALORIES (kcal)</label><input type="number" id="eCal" /></div>
     <div class="edit-grid">
       <div><label class="flbl" style="color:var(--green-b)">PROTEIN (g)</label><input type="number" id="eProt" placeholder="--" /></div>
       <div><label class="flbl" style="color:var(--amber)">CARBS (g)</label><input type="number" id="eCarb" placeholder="--" /></div>
@@ -565,10 +669,69 @@ input:focus { outline: none; border-color: var(--blue); }
   </div>
 </div>
 
+<!-- ══════ AI ASSISTANT MODAL ══════ -->
+<div class="ai-modal-bg" id="aiModal">
+  <div class="ai-header">
+    <div class="ai-title">✦ AI ASSISTANT</div>
+    <button class="ai-close" onclick="closeAI()">✕</button>
+  </div>
+  <div class="ai-chat" id="aiChat">
+    <div class="ai-msg bot">
+      <div class="ai-bubble">Hey! Tell me what you ate and I'll estimate the calories and macros.<br><br>
+      You can say things like:<br>
+      · "3 idlis and coconut chutney"<br>
+      · "30g whey protein, 50g oats, banana"<br>
+      · "bowl of dal rice with ghee"<br><br>
+      Or take a photo of your food 📷 and I'll analyze it!</div>
+    </div>
+  </div>
+  <div class="ai-hint" id="aiHint"></div>
+  <div class="ai-input-row">
+    <button class="ai-cam-btn" onclick="document.getElementById('aiCamInput').click()" title="Photo">📷</button>
+    <input type="file" id="aiCamInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleAIPhoto(event)" />
+    <input type="file" id="aiGallInput" class="hidden-input" accept="image/*" onchange="handleAIPhoto(event)" />
+    <textarea id="aiInput" placeholder="Describe what you ate..." onkeydown="aiKeydown(event)" oninput="this.style.height='40px';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+    <button class="ai-send" onclick="sendAI()">SEND</button>
+  </div>
+</div>
+
+<!-- ══════ LABEL SCAN MODAL ══════ -->
+<div class="scan-modal-bg" id="scanModal">
+  <div class="scan-header">
+    <div class="scan-title">📷 SCAN LABEL</div>
+    <button class="ai-close" onclick="closeScanModal()">✕</button>
+  </div>
+  <div class="scan-body">
+    <div class="scan-placeholder" id="scanPlaceholder" onclick="document.getElementById('scanCamInput').click()">
+      <div class="scan-ph-icon">📷</div>
+      <div class="scan-ph-text">Tap to take a photo of the<br>nutrition label<br><span style="color:var(--blue-b)">or tap the buttons below</span></div>
+    </div>
+    <img class="scan-preview" id="scanPreview" src="" alt="label" />
+    <div class="scan-actions">
+      <button class="bcam" onclick="document.getElementById('scanCamInput').click()" style="flex:1">📷 Camera</button>
+      <button class="bgst" onclick="document.getElementById('scanGallInput').click()" style="flex:1">🖼 Gallery</button>
+    </div>
+    <input type="file" id="scanCamInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleScanPhoto(event)" />
+    <input type="file" id="scanGallInput" class="hidden-input" accept="image/*" onchange="handleScanPhoto(event)" />
+    <div class="scan-result" id="scanResult">
+      <div class="scan-food-name" id="scanFoodName"></div>
+      <div class="scan-serving" id="scanServing"></div>
+      <div class="scan-macros">
+        <div class="scan-mac"><div class="scan-mac-v" id="scanCal" style="color:var(--blue-b)">--</div><div class="scan-mac-l">kcal</div></div>
+        <div class="scan-mac"><div class="scan-mac-v" id="scanProt" style="color:var(--green-b)">--</div><div class="scan-mac-l">protein</div></div>
+        <div class="scan-mac"><div class="scan-mac-v" id="scanCarb" style="color:var(--amber)">--</div><div class="scan-mac-l">carbs</div></div>
+        <div class="scan-mac"><div class="scan-mac-v" id="scanFat" style="color:var(--red-b)">--</div><div class="scan-mac-l">fat</div></div>
+      </div>
+      <button class="scan-log-btn" onclick="logScannedItem()">+ LOG THIS ITEM</button>
+      <div class="scan-note">Per serving values shown above.<br>Tap LOG to add to today's log.</div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════ DATA ═══════════
+// ═══════════ CONSTANTS ═══════════
 const CRAVINGS = [
   { t:'HOLD UP.', b:'Drink a full glass of water and wait 10 minutes. 90% of cravings vanish. You have worked too hard to blow it now.' },
   { t:'IS IT WORTH IT?', b:'Will you feel good about this in an hour? Grab a diet soda or sparkling water. The craving passes -- your progress does not come back as fast.' },
@@ -587,13 +750,12 @@ const QUOTES = [
 // ═══════════ STATE ═══════════
 let db = {};
 try { db = JSON.parse(localStorage.getItem('fuelDB')||'{}'); } catch{}
-
 let goals = { cal:2000, pro:150, crb:200, fat:65 };
-try { const g = JSON.parse(localStorage.getItem('fuelGoals')||'null'); if(g) goals = g; } catch{}
-
+try { const g = JSON.parse(localStorage.getItem('fuelGoals')||'null'); if(g) goals=g; } catch{}
 let savedFoods = [];
 try { savedFoods = JSON.parse(localStorage.getItem('fuelSaved')||'[]'); } catch{}
-
+let waterGoal = 8;
+try { waterGoal = parseInt(localStorage.getItem('fuelWaterGoal')||'8')||8; } catch{}
 function saveDB() { localStorage.setItem('fuelDB', JSON.stringify(db)); }
 function saveGoalsDB() { localStorage.setItem('fuelGoals', JSON.stringify(goals)); }
 function saveFoodsDB() { localStorage.setItem('fuelSaved', JSON.stringify(savedFoods)); }
@@ -604,189 +766,249 @@ function todayKey() {
 }
 let curDay = todayKey();
 function getDayData(key) {
-  const k = key || curDay;
-  if (!db[k]) db[k] = {entries:[]};
+  const k = key||curDay;
+  if (!db[k]) db[k]={entries:[],water:0};
+  if (db[k].water===undefined) db[k].water=0;
   return db[k];
 }
 
 // ═══════════ TABS ═══════════
-let curTab = 'log';
+let curTab='log';
 function switchTab(name) {
-  curTab = name;
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const names = ['log','saved','history'];
-    t.classList.toggle('active', names[i] === name);
+  curTab=name;
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const names=['log','saved','history'];
+    t.classList.toggle('active',names[i]===name);
   });
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
-  if (name === 'saved') renderSaved();
-  if (name === 'history') renderHistory();
+  if(name==='saved') renderSaved();
+  if(name==='history') renderHistory();
 }
 
 // ═══════════ GOALS ═══════════
 function toggleGoalEdit() {
-  const el = document.getElementById('goalsEdit');
+  const el=document.getElementById('goalsEdit');
   el.classList.toggle('open');
-  document.getElementById('goalToggleBtn').textContent = el.classList.contains('open') ? 'CLOSE ▴' : 'EDIT ▾';
-  if (el.classList.contains('open')) {
-    document.getElementById('ginp-cal').value = goals.cal;
-    document.getElementById('ginp-pro').value = goals.pro;
-    document.getElementById('ginp-crb').value = goals.crb;
-    document.getElementById('ginp-fat').value = goals.fat;
+  document.getElementById('goalToggleBtn').textContent=el.classList.contains('open')?'CLOSE ▴':'EDIT ▾';
+  if(el.classList.contains('open')) {
+    document.getElementById('ginp-cal').value=goals.cal;
+    document.getElementById('ginp-pro').value=goals.pro;
+    document.getElementById('ginp-crb').value=goals.crb;
+    document.getElementById('ginp-fat').value=goals.fat;
   }
 }
 function saveGoals() {
-  const cal = parseInt(document.getElementById('ginp-cal').value)||2000;
-  const pro = parseInt(document.getElementById('ginp-pro').value)||150;
-  const crb = parseInt(document.getElementById('ginp-crb').value)||200;
-  const fat = parseInt(document.getElementById('ginp-fat').value)||65;
-  goals = {cal, pro, crb, fat};
+  goals={
+    cal:parseInt(document.getElementById('ginp-cal').value)||2000,
+    pro:parseInt(document.getElementById('ginp-pro').value)||150,
+    crb:parseInt(document.getElementById('ginp-crb').value)||200,
+    fat:parseInt(document.getElementById('ginp-fat').value)||65
+  };
   saveGoalsDB();
   document.getElementById('goalsEdit').classList.remove('open');
-  document.getElementById('goalToggleBtn').textContent = 'EDIT ▾';
+  document.getElementById('goalToggleBtn').textContent='EDIT ▾';
   updateGoals();
   toast('Targets saved ✓');
 }
 function updateGoals() {
-  const d = getDayData();
-  let tCal=0, tProt=0, tCarb=0, tFat=0;
-  d.entries.forEach(e => {
-    tCal += e.cal||0;
-    if (e.prot!=null) tProt += e.prot;
-    if (e.carb!=null) tCarb += e.carb;
-    if (e.fat!=null) tFat += e.fat;
-  });
-  function setBar(macro, cur, goal) {
-    const pct = Math.min((cur/goal)*100, 100);
-    const rem = goal - Math.round(cur);
-    const bar = document.getElementById('gbar-'+macro);
-    const lbl = document.getElementById('grem-'+macro);
-    bar.style.width = pct+'%';
-    bar.classList.toggle('over', rem < 0);
-    lbl.textContent = rem < 0 ? Math.abs(rem)+(macro==='cal'?' kcal OVER':' g OVER') : rem+(macro==='cal'?' kcal left':' g left');
-    lbl.classList.toggle('over', rem < 0);
+  const d=getDayData();
+  let tCal=0,tProt=0,tCarb=0,tFat=0;
+  d.entries.forEach(e=>{tCal+=e.cal||0;if(e.prot!=null)tProt+=e.prot;if(e.carb!=null)tCarb+=e.carb;if(e.fat!=null)tFat+=e.fat;});
+  function setBar(macro,cur,goal){
+    const pct=Math.min((cur/goal)*100,100);
+    const rem=goal-Math.round(cur);
+    const bar=document.getElementById('gbar-'+macro);
+    const lbl=document.getElementById('grem-'+macro);
+    bar.style.width=pct+'%';
+    bar.classList.toggle('over',rem<0);
+    lbl.textContent=rem<0?Math.abs(rem)+(macro==='cal'?' kcal OVER':' g OVER'):rem+(macro==='cal'?' kcal left':' g left');
+    lbl.classList.toggle('over',rem<0);
   }
-  setBar('cal', tCal, goals.cal);
-  setBar('pro', tProt, goals.pro);
-  setBar('crb', tCarb, goals.crb);
-  setBar('fat', tFat, goals.fat);
+  setBar('cal',tCal,goals.cal);
+  setBar('pro',tProt,goals.pro);
+  setBar('crb',tCarb,goals.crb);
+  setBar('fat',tFat,goals.fat);
+  // header badge
+  const rem=goals.cal-Math.round(tCal);
+  const hk=document.getElementById('hdrKcal');
+  if(rem<0){hk.textContent=Math.abs(rem)+' kcal over';hk.className='hdr-kcal over';}
+  else if(tCal>0){hk.textContent=rem+' kcal left';hk.className='hdr-kcal good';}
+  else{hk.textContent=goals.cal+' kcal goal';hk.className='hdr-kcal';}
+}
+
+// ═══════════ WATER ═══════════
+function renderWater() {
+  const water=getDayData().water||0;
+  const el=document.getElementById('waterGlasses');
+  document.getElementById('waterCount').textContent=water+' / '+waterGoal+' glasses';
+  let html='';
+  for(let i=0;i<waterGoal;i++){
+    html+=`<button class="glass-btn ${i<water?'filled':''}" onclick="setWater(${i<water?i:i+1})" title="${i+1} glass${i+1>1?'es':''}">${i<water?'💧':'○'}</button>`;
+  }
+  // minus button
+  html+=`<button class="glass-btn" onclick="setWater(Math.max(0,${water}-1))" style="border-color:#333;color:#555;font-size:11px">−</button>`;
+  el.innerHTML=html;
+}
+function setWater(n) {
+  getDayData().water=Math.max(0,Math.min(n,waterGoal));
+  saveDB();
+  renderWater();
+  if(getDayData().water>=waterGoal) toast('💧 Water goal hit!');
+}
+function promptWaterGoal() {
+  const v=prompt('Daily water goal (glasses):',waterGoal);
+  const n=parseInt(v);
+  if(n&&n>0&&n<=20){waterGoal=n;localStorage.setItem('fuelWaterGoal',n);renderWater();}
 }
 
 // ═══════════ DAY NAV ═══════════
 function chDay(dir) {
-  const d = new Date(curDay+'T12:00:00');
+  const d=new Date(curDay+'T12:00:00');
   d.setDate(d.getDate()+dir);
-  curDay = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  if(d>new Date()) return;
+  curDay=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   render();
 }
 function clearDay() {
-  if (!confirm('Clear all entries for this day?')) return;
-  getDayData().entries = [];
-  saveDB(); render();
+  if(!confirm('Clear all entries for this day?')) return;
+  getDayData().entries=[];
+  saveDB();render();
 }
+
+// ═══════════ COPY YESTERDAY ═══════════
+function checkCopyYesterday() {
+  if(curDay!==todayKey()) {document.getElementById('copyBanner').style.display='none';return;}
+  const today=getDayData(todayKey());
+  if(today.entries.length>0) {document.getElementById('copyBanner').style.display='none';return;}
+  const yd=new Date(); yd.setDate(yd.getDate()-1);
+  const yk=`${yd.getFullYear()}-${String(yd.getMonth()+1).padStart(2,'0')}-${String(yd.getDate()).padStart(2,'0')}`;
+  const ydata=db[yk];
+  if(ydata&&ydata.entries&&ydata.entries.length>0){
+    document.getElementById('copyBanner').style.display='flex';
+    document.getElementById('copyFromDay').textContent="yesterday's";
+  } else {
+    document.getElementById('copyBanner').style.display='none';
+  }
+}
+function copyYesterday() {
+  const yd=new Date(); yd.setDate(yd.getDate()-1);
+  const yk=`${yd.getFullYear()}-${String(yd.getMonth()+1).padStart(2,'0')}-${String(yd.getDate()).padStart(2,'0')}`;
+  const ydata=db[yk];
+  if(!ydata||!ydata.entries) return;
+  const today=getDayData(todayKey());
+  today.entries=[...ydata.entries.map(e=>({...e,id:Date.now()+Math.random()}))];
+  saveDB();render();
+  toast('Copied yesterday\'s log ✓');
+  document.getElementById('copyBanner').style.display='none';
+}
+
+// ═══════════ PHOTO HANDLING (item form) ═══════════
+let itemPhotoData=null;
+function handleItemPhoto(e) {
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    itemPhotoData=ev.target.result;
+    const img=document.getElementById('itemPhotoPreview');
+    img.src=itemPhotoData;img.classList.add('show');
+    document.getElementById('itemPhotoClear').style.display='block';
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+function clearItemPhoto(){itemPhotoData=null;const img=document.getElementById('itemPhotoPreview');img.src='';img.classList.remove('show');document.getElementById('itemPhotoClear').style.display='none';}
+
+// ═══════════ PHOTO HANDLING (meal form) ═══════════
+let mealPhotoData=null;
+function handleMealPhoto(e) {
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    mealPhotoData=ev.target.result;
+    const img=document.getElementById('mealPhotoPreview');
+    img.src=mealPhotoData;img.classList.add('show');
+    document.getElementById('mealPhotoClear').style.display='block';
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+function clearMealPhoto(){mealPhotoData=null;const img=document.getElementById('mealPhotoPreview');img.src='';img.classList.remove('show');document.getElementById('mealPhotoClear').style.display='none';}
 
 // ═══════════ FORMS ═══════════
 function togItem() {
-  const f = document.getElementById('itemF');
+  const f=document.getElementById('itemF');
   f.classList.toggle('open');
-  if (f.classList.contains('open')) {
-    document.getElementById('mealF').classList.remove('open');
-    document.getElementById('fn').focus();
-  }
+  if(f.classList.contains('open')){document.getElementById('mealF').classList.remove('open');document.getElementById('fn').focus();}
 }
-function togIMacro() {
-  document.getElementById('imf').style.display = document.getElementById('imc').checked ? 'grid' : 'none';
-}
+function togIMacro(){document.getElementById('imf').style.display=document.getElementById('imc').checked?'grid':'none';}
 function togMeal() {
-  const m = document.getElementById('mealF');
+  const m=document.getElementById('mealF');
   m.classList.toggle('open');
-  if (m.classList.contains('open')) {
-    document.getElementById('itemF').classList.remove('open');
-    if (!document.getElementById('ingL').children.length) { addIngR(); addIngR(); }
-    document.getElementById('mname').focus();
-  }
+  if(m.classList.contains('open')){document.getElementById('itemF').classList.remove('open');if(!document.getElementById('ingL').children.length){addIngR();addIngR();}document.getElementById('mname').focus();}
 }
-function togMMacro() {
-  document.getElementById('mmf').style.display = document.getElementById('mmc').checked ? 'grid' : 'none';
-  updateMealPrev();
-}
+function togMMacro(){document.getElementById('mmf').style.display=document.getElementById('mmc').checked?'grid':'none';updateMealPrev();}
 
 function addItem() {
-  const name = document.getElementById('fn').value.trim();
-  const cal = parseFloat(document.getElementById('fc').value)||0;
-  if (!name) { document.getElementById('fn').focus(); return; }
-  const hm = document.getElementById('imc').checked;
-  const prot = hm ? (parseFloat(document.getElementById('fp').value)||0) : null;
-  const carb = hm ? (parseFloat(document.getElementById('fca').value)||0) : null;
-  const fat  = hm ? (parseFloat(document.getElementById('ff').value)||0) : null;
-  const entry = {type:'item', name, cal, prot, carb, fat, id:Date.now()};
+  const name=document.getElementById('fn').value.trim();
+  const cal=parseFloat(document.getElementById('fc').value)||0;
+  if(!name){document.getElementById('fn').focus();return;}
+  const hm=document.getElementById('imc').checked;
+  const prot=hm?(parseFloat(document.getElementById('fp').value)||0):null;
+  const carb=hm?(parseFloat(document.getElementById('fca').value)||0):null;
+  const fat=hm?(parseFloat(document.getElementById('ff').value)||0):null;
+  const entry={type:'item',name,cal,prot,carb,fat,id:Date.now(),photo:itemPhotoData||null};
   getDayData().entries.push(entry);
-
-  if (document.getElementById('isave').checked) {
-    saveFood({type:'item', name, cal, prot, carb, fat});
-    toast('Logged + saved to favourites ⭐');
-  } else {
-    toast('Added: '+name);
-  }
-
+  if(document.getElementById('isave').checked){saveFood({type:'item',name,cal,prot,carb,fat});toast('Logged + saved to favourites ⭐');}
+  else toast('Added: '+name);
   saveDB();
   ['fn','fc','fp','fca','ff'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  document.getElementById('imc').checked = false;
-  document.getElementById('isave').checked = false;
-  document.getElementById('imf').style.display = 'none';
+  document.getElementById('imc').checked=false;
+  document.getElementById('isave').checked=false;
+  document.getElementById('imf').style.display='none';
+  clearItemPhoto();
   document.getElementById('fn').focus();
   render();
 }
 
 function addIngR() {
-  const c = document.getElementById('ingL');
-  const id = 'ir_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
-  const r = document.createElement('div');
-  r.className='ing-r'; r.id=id;
-  r.innerHTML = `<input type="text" placeholder="Ingredient" oninput="updateMealPrev()" /><input type="number" placeholder="kcal" oninput="updateMealPrev()" /><button class="irem" onclick="remIng('${id}')">✕</button>`;
+  const c=document.getElementById('ingL');
+  const id='ir_'+Date.now()+'_'+Math.random().toString(36).slice(2,5);
+  const r=document.createElement('div');
+  r.className='ing-r';r.id=id;
+  r.innerHTML=`<input type="text" placeholder="Ingredient" oninput="updateMealPrev()" /><input type="number" placeholder="kcal" oninput="updateMealPrev()" /><button class="irem" onclick="remIng('${id}')">✕</button>`;
   c.appendChild(r);
 }
 function remIng(id){const e=document.getElementById(id);if(e)e.remove();updateMealPrev();}
-
-function getIngs() {
-  return Array.from(document.getElementById('ingL').querySelectorAll('.ing-r')).map(r=>{
-    const ins=r.querySelectorAll('input');
-    return {name:ins[0].value.trim(), cal:parseFloat(ins[1].value)||0};
-  }).filter(i=>i.name||i.cal);
-}
-
-function updateMealPrev() {
-  const ings = getIngs();
-  const ingCal = ings.reduce((s,i)=>s+i.cal,0);
-  const manCal = parseFloat(document.getElementById('mCal').value)||0;
-  const finalCal = manCal || ingCal;
-  const hm = document.getElementById('mmc').checked;
-  document.getElementById('mpC').textContent = Math.round(finalCal) || '--';
-  document.getElementById('mpP').textContent = hm ? (document.getElementById('mp').value||'--') : '--';
-  document.getElementById('mpCa').textContent = hm ? (document.getElementById('mca').value||'--') : '--';
-  document.getElementById('mpF').textContent = hm ? (document.getElementById('mf').value||'--') : '--';
+function getIngs(){return Array.from(document.getElementById('ingL').querySelectorAll('.ing-r')).map(r=>{const ins=r.querySelectorAll('input');return{name:ins[0].value.trim(),cal:parseFloat(ins[1].value)||0};}).filter(i=>i.name||i.cal);}
+function updateMealPrev(){
+  const ings=getIngs();
+  const ingCal=ings.reduce((s,i)=>s+i.cal,0);
+  const manCal=parseFloat(document.getElementById('mCal').value)||0;
+  const finalCal=manCal||ingCal;
+  const hm=document.getElementById('mmc').checked;
+  document.getElementById('mpC').textContent=Math.round(finalCal)||'--';
+  document.getElementById('mpP').textContent=hm?(document.getElementById('mp').value||'--'):'--';
+  document.getElementById('mpCa').textContent=hm?(document.getElementById('mca').value||'--'):'--';
+  document.getElementById('mpF').textContent=hm?(document.getElementById('mf').value||'--'):'--';
 }
 
 function addMeal() {
-  const mealName = document.getElementById('mname').value.trim() || 'Meal';
-  const ings = getIngs();
-  const ingCal = ings.reduce((s,i)=>s+i.cal,0);
-  const manCal = parseFloat(document.getElementById('mCal').value)||0;
-  const cal = manCal || ingCal;
-  const hm = document.getElementById('mmc').checked;
-  const prot = hm ? (parseFloat(document.getElementById('mp').value)||0) : null;
-  const carb = hm ? (parseFloat(document.getElementById('mca').value)||0) : null;
-  const fat  = hm ? (parseFloat(document.getElementById('mf').value)||0) : null;
-  const entry = {type:'meal', name:mealName, ingredients:ings, cal, prot, carb, fat, id:Date.now()};
+  const mealName=document.getElementById('mname').value.trim()||'Meal';
+  const ings=getIngs();
+  const ingCal=ings.reduce((s,i)=>s+i.cal,0);
+  const manCal=parseFloat(document.getElementById('mCal').value)||0;
+  const cal=manCal||ingCal;
+  const hm=document.getElementById('mmc').checked;
+  const prot=hm?(parseFloat(document.getElementById('mp').value)||0):null;
+  const carb=hm?(parseFloat(document.getElementById('mca').value)||0):null;
+  const fat=hm?(parseFloat(document.getElementById('mf').value)||0):null;
+  const entry={type:'meal',name:mealName,ingredients:ings,cal,prot,carb,fat,id:Date.now(),photo:mealPhotoData||null};
   getDayData().entries.push(entry);
-
-  if (document.getElementById('msave').checked) {
-    saveFood({type:'meal', name:mealName, ingredients:ings, cal, prot, carb, fat});
-    toast('Logged + saved to favourites ⭐');
-  } else {
-    toast('Added: '+mealName);
-  }
-
+  if(document.getElementById('msave').checked){saveFood({type:'meal',name:mealName,ingredients:ings,cal,prot,carb,fat});toast('Logged + saved ⭐');}
+  else toast('Added: '+mealName);
   saveDB();
   document.getElementById('mname').value='';
   document.getElementById('mCal').value='';
@@ -796,257 +1018,575 @@ function addMeal() {
   document.getElementById('mmf').style.display='none';
   ['mp','mca','mf'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('mealF').classList.remove('open');
+  clearMealPhoto();
   render();
 }
 
 // ═══════════ RENDER LOG ═══════════
 function render() {
-  const day = getDayData();
-  const entries = day.entries;
-
-  const d = new Date(curDay+'T12:00:00');
-  const isToday = curDay === todayKey();
-  document.getElementById('dayDisp').textContent =
+  const day=getDayData();
+  const entries=day.entries;
+  const isToday=curDay===todayKey();
+  const d=new Date(curDay+'T12:00:00');
+  document.getElementById('dayDisp').textContent=
     (isToday?'Today -- ':'')+d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
-
   let tCal=0,tProt=0,tCarb=0,tFat=0;
-  entries.forEach(e=>{
-    tCal+=e.cal||0;
-    if(e.prot!=null) tProt+=e.prot;
-    if(e.carb!=null) tCarb+=e.carb;
-    if(e.fat!=null) tFat+=e.fat;
-  });
-  document.getElementById('tCal').textContent  = Math.round(tCal);
-  document.getElementById('tProt').textContent = Math.round(tProt);
-  document.getElementById('tCarb').textContent = Math.round(tCarb);
-  document.getElementById('tFat').textContent  = Math.round(tFat);
+  entries.forEach(e=>{tCal+=e.cal||0;if(e.prot!=null)tProt+=e.prot;if(e.carb!=null)tCarb+=e.carb;if(e.fat!=null)tFat+=e.fat;});
+  document.getElementById('tCal').textContent=Math.round(tCal);
+  document.getElementById('tProt').textContent=Math.round(tProt);
+  document.getElementById('tCarb').textContent=Math.round(tCarb);
+  document.getElementById('tFat').textContent=Math.round(tFat);
   updateGoals();
   updateStreak();
+  renderWater();
+  checkCopyYesterday();
 
-  const body = document.getElementById('logB');
-  if (!entries.length) { body.innerHTML='<div class="lempty">Nothing logged yet.</div>'; return; }
-
-  body.innerHTML = entries.map(e=>{
+  const body=document.getElementById('logB');
+  if(!entries.length){body.innerHTML='<div class="lempty">Nothing logged yet.<br><span style="font-size:10px;color:#333">Use + ITEM, + MEAL, AI, or scan a label</span></div>';return;}
+  body.innerHTML=entries.map(e=>{
+    const photoHtml=e.photo?`<img class="lphoto" src="${e.photo}" alt="food photo" />`:'';
     if(e.type==='meal'){
       const ings=(e.ingredients||[]).map(i=>`<div class="mgir"><div class="mgil1"><span class="mgin">↳ ${i.name||'--'}</span><span class="mgic">${Math.round(i.cal)} kcal</span></div></div>`).join('');
-      const hasMac = e.prot!=null;
-      const macLine = hasMac ? `<span class="pp">${Math.round(e.prot)}g P</span> · <span class="cp">${Math.round(e.carb)}g C</span> · <span class="fp">${Math.round(e.fat)}g F</span>` : '';
-      return `<div class="mghdr"><div class="mgl"><div class="mgn">🍽 ${e.name}</div><div class="mgc"><span>${Math.round(e.cal)}</span> kcal total</div>${hasMac?`<div class="mgmac">${macLine}</div>`:''}</div><div class="lactions"><button class="ledit" onclick="openEdit(${e.id})">Edit</button><button class="ldel" onclick="delE(${e.id})">Remove</button></div></div>${ings}`;
+      const hasMac=e.prot!=null;
+      const macLine=hasMac?`<span class="pp">${Math.round(e.prot)}g P</span> · <span class="cp">${Math.round(e.carb)}g C</span> · <span class="fp">${Math.round(e.fat)}g F</span>`:'';
+      return `<div class="mghdr"><div class="mgl"><div class="mgn">🍽 ${e.name}</div><div class="mgc"><span>${Math.round(e.cal)}</span> kcal total</div>${hasMac?`<div class="mgmac">${macLine}</div>`:''}</div><div class="lactions"><button class="ledit" onclick="openEdit(${e.id})">Edit</button><button class="ldel" onclick="delE(${e.id})">Remove</button></div></div>${ings}${photoHtml?`<div style="padding:8px 13px;background:#080808;">${photoHtml}</div>`:''}`;
     }
-    const hm = e.prot!=null;
-    const macLine = hm
-      ? `<span class="pp">${Math.round(e.prot)}g P</span> · <span class="cp">${Math.round(e.carb)}g C</span> · <span class="fp">${Math.round(e.fat)}g F</span>`
-      : `<span style="color:#333">macros not logged</span>`;
-    return `<div class="lentry"><div class="l1"><span class="lname">${e.name}</span><span class="lcal">${Math.round(e.cal)} kcal</span></div><div class="l2"><span class="lmac">${macLine}</span><div class="lactions"><button class="ledit" onclick="openEdit(${e.id})">Edit</button><button class="ldel" onclick="delE(${e.id})">Remove</button></div></div></div>`;
+    const hm=e.prot!=null;
+    const macLine=hm?`<span class="pp">${Math.round(e.prot)}g P</span> · <span class="cp">${Math.round(e.carb)}g C</span> · <span class="fp">${Math.round(e.fat)}g F</span>`:`<span style="color:#333">macros not logged</span>`;
+    return `<div class="lentry"><div class="l1"><span class="lname">${e.name}</span><span class="lcal">${Math.round(e.cal)} kcal</span></div><div class="l2"><span class="lmac">${macLine}</span><div class="lactions"><button class="ledit" onclick="openEdit(${e.id})">Edit</button><button class="ldel" onclick="delE(${e.id})">Remove</button></div></div>${photoHtml}</div>`;
   }).join('');
 }
 
-function delE(id){
-  getDayData().entries=getDayData().entries.filter(e=>e.id!==id);
-  saveDB();render();
-}
+function delE(id){getDayData().entries=getDayData().entries.filter(e=>e.id!==id);saveDB();render();}
 
 // ═══════════ EDIT ENTRY ═══════════
-function openEdit(id) {
-  const entry = getDayData().entries.find(e=>e.id===id);
-  if (!entry) return;
-  document.getElementById('editId').value = id;
-  document.getElementById('eName').value = entry.name;
-  document.getElementById('eCal').value = entry.cal||'';
-  document.getElementById('eProt').value = entry.prot!=null ? entry.prot : '';
-  document.getElementById('eCarb').value = entry.carb!=null ? entry.carb : '';
-  document.getElementById('eFat').value = entry.fat!=null ? entry.fat : '';
+function openEdit(id){
+  const entry=getDayData().entries.find(e=>e.id===id);
+  if(!entry) return;
+  document.getElementById('editId').value=id;
+  document.getElementById('eName').value=entry.name;
+  document.getElementById('eCal').value=entry.cal||'';
+  document.getElementById('eProt').value=entry.prot!=null?entry.prot:'';
+  document.getElementById('eCarb').value=entry.carb!=null?entry.carb:'';
+  document.getElementById('eFat').value=entry.fat!=null?entry.fat:'';
   document.getElementById('editM').classList.add('open');
 }
-function closeEdit() { document.getElementById('editM').classList.remove('open'); }
-function saveEdit() {
-  const id = parseInt(document.getElementById('editId').value);
-  const entry = getDayData().entries.find(e=>e.id===id);
-  if (!entry) return;
-  entry.name = document.getElementById('eName').value.trim() || entry.name;
-  entry.cal = parseFloat(document.getElementById('eCal').value)||0;
-  const pv = document.getElementById('eProt').value;
-  const cv = document.getElementById('eCarb').value;
-  const fv = document.getElementById('eFat').value;
-  entry.prot = pv !== '' ? parseFloat(pv)||0 : null;
-  entry.carb = cv !== '' ? parseFloat(cv)||0 : null;
-  entry.fat  = fv !== '' ? parseFloat(fv)||0 : null;
-  saveDB(); closeEdit(); render();
+function closeEdit(){document.getElementById('editM').classList.remove('open');}
+function saveEdit(){
+  const id=parseInt(document.getElementById('editId').value);
+  const entry=getDayData().entries.find(e=>e.id===id);
+  if(!entry) return;
+  entry.name=document.getElementById('eName').value.trim()||entry.name;
+  entry.cal=parseFloat(document.getElementById('eCal').value)||0;
+  const pv=document.getElementById('eProt').value;
+  const cv=document.getElementById('eCarb').value;
+  const fv=document.getElementById('eFat').value;
+  entry.prot=pv!==''?parseFloat(pv)||0:null;
+  entry.carb=cv!==''?parseFloat(cv)||0:null;
+  entry.fat=fv!==''?parseFloat(fv)||0:null;
+  saveDB();closeEdit();render();
   toast('Entry updated ✓');
 }
 
 // ═══════════ SAVED FOODS ═══════════
-function saveFood(food) {
-  const existing = savedFoods.findIndex(f => f.name.toLowerCase() === food.name.toLowerCase());
-  if (existing >= 0) { savedFoods[existing] = {...food, savedAt: Date.now()}; }
-  else { savedFoods.push({...food, savedAt: Date.now()}); }
+function saveFood(food){
+  const existing=savedFoods.findIndex(f=>f.name.toLowerCase()===food.name.toLowerCase());
+  if(existing>=0){savedFoods[existing]={...food,savedAt:Date.now()};}
+  else{savedFoods.push({...food,savedAt:Date.now()});}
   saveFoodsDB();
 }
-
-function addSavedToLog(idx) {
-  const food = savedFoods[idx];
-  if (!food) return;
-  getDayData().entries.push({...food, id: Date.now()});
+function addSavedToLog(idx){
+  const food=savedFoods[idx];
+  if(!food) return;
+  getDayData().entries.push({...food,id:Date.now()});
   saveDB();
-  if (curTab === 'log') render();
+  switchTab('log');render();
   toast('Added: '+food.name+' ✓');
-  // switch to log tab briefly to show it was added
-  switchTab('log');
-  render();
 }
-
-function deleteSaved(idx) {
-  if (!confirm('Remove "'+savedFoods[idx].name+'" from favourites?')) return;
-  savedFoods.splice(idx, 1);
-  saveFoodsDB();
-  renderSaved();
+function deleteSaved(idx){
+  if(!confirm('Remove "'+savedFoods[idx].name+'" from favourites?')) return;
+  savedFoods.splice(idx,1);saveFoodsDB();renderSaved();
 }
-
-function renderSaved() {
-  const el = document.getElementById('savedList');
-  if (!savedFoods.length) {
-    el.innerHTML = `<div class="saved-empty">No favourites yet.<br><br>When logging, check<br><span style="color:var(--amber)">⭐ Save to favourites</span><br>to add items here.</div>`;
-    return;
-  }
-  el.innerHTML = savedFoods.map((f,i) => {
-    const hasMac = f.prot != null;
-    const macStr = hasMac
-      ? ` · <span class="sp">${Math.round(f.prot)}P</span> <span class="sca">${Math.round(f.carb)}C</span> <span class="sf">${Math.round(f.fat)}F</span>`
-      : '';
-    return `<div class="saved-card">
-      <div class="saved-info">
-        <div class="saved-type">${f.type === 'meal' ? '🍽 MEAL' : '🥤 ITEM'}</div>
-        <div class="saved-name">${f.name}</div>
-        <div class="saved-meta"><span class="sc">${Math.round(f.cal)} kcal</span>${macStr}</div>
-      </div>
-      <div class="saved-actions">
-        <button class="sadd" onclick="addSavedToLog(${i})">+ ADD</button>
-        <button class="sdel" onclick="deleteSaved(${i})">✕</button>
-      </div>
-    </div>`;
+function renderSaved(){
+  const el=document.getElementById('savedList');
+  if(!savedFoods.length){el.innerHTML=`<div class="saved-empty">No favourites yet.<br><br>When logging, check<br><span style="color:var(--amber)">⭐ Save to favourites</span><br>to add items here.</div>`;return;}
+  el.innerHTML=savedFoods.map((f,i)=>{
+    const hasMac=f.prot!=null;
+    const macStr=hasMac?` · <span class="sp">${Math.round(f.prot)}P</span> <span class="sca">${Math.round(f.carb)}C</span> <span class="sf">${Math.round(f.fat)}F</span>`:'';
+    return `<div class="saved-card"><div class="saved-info"><div class="saved-type">${f.type==='meal'?'🍽 MEAL':'🥤 ITEM'}</div><div class="saved-name">${f.name}</div><div class="saved-meta"><span class="sc">${Math.round(f.cal)} kcal</span>${macStr}</div></div><div class="saved-actions"><button class="sadd" onclick="addSavedToLog(${i})">+ ADD</button><button class="sdel" onclick="deleteSaved(${i})">✕</button></div></div>`;
   }).join('');
 }
 
 // ═══════════ HISTORY ═══════════
-function renderHistory() {
-  const days = Object.keys(db).sort().reverse();
-  const goal = goals.cal;
-
-  // Stats
-  let streak = 0; let totalDays = days.length; let goalHits = 0;
-  const sortedAsc = [...days].sort();
-  let s = 0;
-  for (let i = sortedAsc.length-1; i >= 0; i--) {
-    const cal = Math.round(getDayData(sortedAsc[i]).entries.reduce((a,e)=>a+(e.cal||0),0));
-    if (cal > 0 && cal <= goal) { s++; goalHits++; } else break;
+let summaryMode='week';
+function switchSummary(mode){
+  summaryMode=mode;
+  document.getElementById('sumWeekBtn').classList.toggle('active',mode==='week');
+  document.getElementById('sumMonthBtn').classList.toggle('active',mode==='month');
+  renderSummary();
+}
+function renderSummary(){
+  const days=summaryMode==='week'?7:30;
+  let totalCal=0,totalProt=0,totalCarb=0,totalFat=0,loggedDays=0,goalHits=0;
+  for(let i=0;i<days;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if(!db[k]) continue;
+    const cal=db[k].entries.reduce((a,e)=>a+(e.cal||0),0);
+    if(cal===0) continue;
+    loggedDays++;totalCal+=cal;
+    db[k].entries.forEach(e=>{if(e.prot!=null)totalProt+=e.prot;if(e.carb!=null)totalCarb+=e.carb;if(e.fat!=null)totalFat+=e.fat;});
+    if(cal<=goals.cal) goalHits++;
   }
-  streak = s;
-  days.forEach(d => {
-    const cal = getDayData(d).entries.reduce((a,e)=>a+(e.cal||0),0);
-    if (cal > 0 && cal <= goal) goalHits++;
-  });
+  const avg=loggedDays?Math.round(totalCal/loggedDays):0;
+  const avgP=loggedDays?Math.round(totalProt/loggedDays):0;
+  document.getElementById('summaryGrid').innerHTML=`
+    <div class="sum-cell"><div class="sum-val">${avg}</div><div class="sum-lbl">Avg kcal/day</div></div>
+    <div class="sum-cell"><div class="sum-val">${loggedDays}</div><div class="sum-lbl">Days logged</div></div>
+    <div class="sum-cell"><div class="sum-val">${loggedDays?Math.round((goalHits/loggedDays)*100):0}%</div><div class="sum-lbl">Goal rate</div></div>
+    <div class="sum-cell"><div class="sum-val" style="color:var(--green-b)">${avgP}g</div><div class="sum-lbl">Avg protein</div></div>
+    <div class="sum-cell"><div class="sum-val" style="color:var(--amber)">${loggedDays?Math.round(totalCarb/loggedDays):0}g</div><div class="sum-lbl">Avg carbs</div></div>
+    <div class="sum-cell"><div class="sum-val" style="color:var(--red-b)">${loggedDays?Math.round(totalFat/loggedDays):0}g</div><div class="sum-lbl">Avg fat</div></div>
+  `;
+}
 
-  document.getElementById('histStats').innerHTML = `
+function renderHistory(){
+  const days=Object.keys(db).sort().reverse();
+  const goal=goals.cal;
+
+  // Streak calc (fixed -- no double counting)
+  let streak=0;
+  for(let i=0;i<365;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const cal=db[k]?db[k].entries.reduce((a,e)=>a+(e.cal||0),0):0;
+    if(cal>0&&cal<=goal) streak++;
+    else if(i>0) break;
+  }
+  let totalDays=0,goalHits=0;
+  days.forEach(d=>{const cal=getDayData(d).entries.reduce((a,e)=>a+(e.cal||0),0);if(cal>0){totalDays++;if(cal<=goal)goalHits++;}});
+
+  document.getElementById('histStats').innerHTML=`
     <div class="hstat"><div class="hstat-v">${streak}</div><div class="hstat-l">Day Streak</div></div>
     <div class="hstat"><div class="hstat-v">${totalDays}</div><div class="hstat-l">Days Logged</div></div>
-    <div class="hstat"><div class="hstat-v">${totalDays ? Math.round((goalHits/totalDays)*100) : 0}%</div><div class="hstat-l">Goal Hit Rate</div></div>
+    <div class="hstat"><div class="hstat-v">${totalDays?Math.round((goalHits/totalDays)*100):0}%</div><div class="hstat-l">Goal Hit Rate</div></div>
   `;
 
   // Week chart
-  const weekDays = [];
-  for (let i=6; i>=0; i--) {
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const cal = db[k] ? Math.round(db[k].entries.reduce((a,e)=>a+(e.cal||0),0)) : 0;
-    const label = d.toLocaleDateString('en-GB',{weekday:'short'}).substring(0,2);
-    weekDays.push({k, cal, label, isToday: k===todayKey()});
+  const weekDays=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const cal=db[k]?Math.round(db[k].entries.reduce((a,e)=>a+(e.cal||0),0)):0;
+    const label=d.toLocaleDateString('en-GB',{weekday:'short'}).substring(0,2);
+    weekDays.push({k,cal,label,isToday:k===todayKey()});
   }
-  const maxCal = Math.max(...weekDays.map(d=>d.cal), goal, 1);
-  document.getElementById('histWeek').innerHTML = weekDays.map(d => {
-    const h = Math.round((d.cal / maxCal) * 40);
-    const cls = d.cal > goal ? 'over' : d.cal > 0 ? 'hit' : '';
-    return `<div class="hist-day ${d.isToday?'today':''} ${d.cal>0&&d.cal<=goal?'hit':''}">
+  const maxCal=Math.max(...weekDays.map(d=>d.cal),goal,1);
+  document.getElementById('histWeek').innerHTML=weekDays.map(d=>{
+    const h=Math.round((d.cal/maxCal)*40);
+    const cls=d.cal>goal?'over':d.cal>0?'hit':'';
+    return `<div class="hist-day ${d.isToday?'today':''} ${d.cal>0&&d.cal<=goal?'hit':''}" onclick="jumpToDay('${d.k}')">
       <div class="hd-label">${d.label}</div>
       <div class="hd-bar-wrap"><div class="hd-bar ${cls}" style="height:${Math.max(h,2)}px"></div></div>
       <div class="hd-cal">${d.cal||''}</div>
     </div>`;
   }).join('');
 
-  // List
-  if (!days.length) {
-    document.getElementById('histList').innerHTML = '<div class="saved-empty">No history yet.<br>Start logging!</div>';
-    return;
-  }
-  document.getElementById('histList').innerHTML = days.slice(0,30).map(k => {
-    const d = getDayData(k);
-    const cal = Math.round(d.entries.reduce((a,e)=>a+(e.cal||0),0));
-    const hit = cal > 0 && cal <= goal;
-    const date = new Date(k+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  // Macro trend chart
+  drawTrendChart(weekDays);
+
+  // Summary
+  renderSummary();
+
+  // History list -- no 30 day limit
+  if(!days.length){document.getElementById('histList').innerHTML='<div class="saved-empty">No history yet.<br>Start logging!</div>';return;}
+  document.getElementById('histList').innerHTML=days.map(k=>{
+    const d=getDayData(k);
+    const cal=Math.round(d.entries.reduce((a,e)=>a+(e.cal||0),0));
+    const hit=cal>0&&cal<=goal;
+    const date=new Date(k+'T12:00:00').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
     return `<div class="hist-entry ${hit?'hit':'miss'}" onclick="jumpToDay('${k}')">
-      <div><div class="he-date">${date}</div><div class="he-status ${hit?'hit':''}">${cal > goal ? '▲ OVER' : cal > 0 ? '✓ ON TRACK' : 'nothing logged'}</div></div>
+      <div><div class="he-date">${date}</div><div class="he-status ${hit?'hit':''}">${cal>goal?'▲ OVER':cal>0?'✓ ON TRACK':'nothing logged'}</div></div>
       <div class="he-kcal">${cal} <span style="font-size:9px;color:var(--muted)">kcal</span></div>
     </div>`;
   }).join('');
 }
 
-function jumpToDay(k) {
-  curDay = k;
-  switchTab('log');
-  render();
+// ═══════════ MACRO TREND CHART ═══════════
+function drawTrendChart(weekDays) {
+  const canvas=document.getElementById('trendCanvas');
+  if(!canvas) return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||canvas.parentElement.clientWidth||300;
+  const H=80;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // Build data per day
+  const calData=[],protData=[],carbData=[],fatData=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const entries=db[k]?db[k].entries:[];
+    calData.push(entries.reduce((a,e)=>a+(e.cal||0),0));
+    protData.push(entries.reduce((a,e)=>a+(e.prot||0),0));
+    carbData.push(entries.reduce((a,e)=>a+(e.carb||0),0));
+    fatData.push(entries.reduce((a,e)=>a+(e.fat||0),0));
+  }
+
+  function drawLine(data,color,maxV){
+    if(maxV===0) return;
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.lineJoin='round';
+    data.forEach((v,i)=>{
+      const x=(i/(data.length-1))*(W-20)+10;
+      const y=H-10-((v/maxV)*(H-20));
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // dots
+    data.forEach((v,i)=>{
+      if(v===0) return;
+      const x=(i/(data.length-1))*(W-20)+10;
+      const y=H-10-((v/maxV)*(H-20));
+      ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
+    });
+  }
+  const maxCal=Math.max(...calData,1);
+  const maxMac=Math.max(...protData,...carbData,...fatData,1);
+  // Scale macros relative to calories for visual coherence
+  const scale=maxCal/maxMac;
+  drawLine(calData,'#3b82f6',maxCal);
+  drawLine(protData.map(v=>v*scale),'#22c55e',maxCal);
+  drawLine(carbData.map(v=>v*scale),'#f59e0b',maxCal);
+  drawLine(fatData.map(v=>v*scale),'#ef4444',maxCal);
+
+  // Day labels
+  ctx.fillStyle='#555';ctx.font='8px Space Mono, monospace';ctx.textAlign='center';
+  weekDays.forEach((d,i)=>{
+    const x=(i/(weekDays.length-1))*(W-20)+10;
+    ctx.fillText(d.label,x,H-1);
+  });
 }
 
+function jumpToDay(k){curDay=k;switchTab('log');render();}
+
 // ═══════════ STREAK ═══════════
-function updateStreak() {
-  let streak = 0;
-  const goal = goals.cal;
-  for (let i=0; i<365; i++) {
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const k = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    const cal = db[k] ? db[k].entries.reduce((a,e)=>a+(e.cal||0),0) : 0;
-    if (cal > 0 && cal <= goal) streak++;
-    else if (i > 0) break;
+function updateStreak(){
+  let streak=0;
+  const goal=goals.cal;
+  for(let i=0;i<365;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const cal=db[k]?db[k].entries.reduce((a,e)=>a+(e.cal||0),0):0;
+    if(cal>0&&cal<=goal) streak++;
+    else if(i>0) break;
   }
-  document.getElementById('streakBadge').textContent = `🔥 ${streak} DAY${streak!==1?'S':''}`;
+  document.getElementById('streakBadge').textContent=`🔥 ${streak} DAY${streak!==1?'S':''}`;
 }
 
 // ═══════════ CRAVING ═══════════
-function openCrav() {
-  const c = CRAVINGS[Math.floor(Math.random()*CRAVINGS.length)];
-  const q = QUOTES[Math.floor(Math.random()*QUOTES.length)];
-  document.getElementById('mT').textContent = c.t;
-  document.getElementById('mB').textContent = c.b;
-  document.getElementById('mQ').textContent = '"'+q+'"';
+function openCrav(){
+  const c=CRAVINGS[Math.floor(Math.random()*CRAVINGS.length)];
+  const q=QUOTES[Math.floor(Math.random()*QUOTES.length)];
+  document.getElementById('mT').textContent=c.t;
+  document.getElementById('mB').textContent=c.b;
+  document.getElementById('mQ').textContent='"'+q+'"';
   document.getElementById('cravM').classList.add('open');
 }
-function closeCrav() { document.getElementById('cravM').classList.remove('open'); }
-function logCravingAnyway() {
-  closeCrav();
-  togItem();
-}
+function closeCrav(){document.getElementById('cravM').classList.remove('open');}
+function logCravingAnyway(){closeCrav();togItem();}
 
 // ═══════════ TOAST ═══════════
 let toastTimer;
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ═══════════ INIT ═══════════
-function init() {
-  document.getElementById('hdrDate').textContent = new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
-  ['mCal','mp','mca','mf'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.addEventListener('input',updateMealPrev);
+// ═══════════ AI ASSISTANT ═══════════
+let aiPhotoData=null;
+let aiPendingResult=null;
+
+function openAI(){document.getElementById('aiModal').classList.add('open');document.getElementById('aiInput').focus();}
+function closeAI(){document.getElementById('aiModal').classList.remove('open');}
+
+function handleAIPhoto(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    aiPhotoData=ev.target.result;
+    appendAIMsg('user',null,aiPhotoData);
+    toast('Photo attached -- send to analyze 📷');
+    document.getElementById('aiHint').textContent='📷 Photo ready -- tap SEND or add a description';
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function aiKeydown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}}
+
+function appendAIMsg(role,text,imgSrc){
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');
+  div.className='ai-msg '+role;
+  let inner='';
+  if(imgSrc) inner+=`<img class="ai-img-preview" src="${imgSrc}" alt="food" />`;
+  if(text) inner+=`<div class="ai-bubble">${text}</div>`;
+  div.innerHTML=inner;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  return div;
+}
+
+function appendAILoading(){
+  const chat=document.getElementById('aiChat');
+  const div=document.createElement('div');
+  div.className='ai-msg bot';
+  div.innerHTML=`<div class="ai-bubble loading">Analyzing</div>`;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  return div;
+}
+
+async function sendAI(){
+  const input=document.getElementById('aiInput');
+  const text=input.value.trim();
+  if(!text&&!aiPhotoData) return;
+
+  if(text) appendAIMsg('user',text,null);
+  input.value='';input.style.height='40px';
+  document.getElementById('aiHint').textContent='';
+
+  const loadingDiv=appendAILoading();
+
+  // Build message content
+  const contentParts=[];
+  if(aiPhotoData){
+    const base64=aiPhotoData.split(',')[1];
+    const mtype=aiPhotoData.split(';')[0].split(':')[1]||'image/jpeg';
+    contentParts.push({type:'image',source:{type:'base64',media_type:mtype,data:base64}});
+  }
+  const prompt=text||'What food is in this image? Estimate calories and macros.';
+  contentParts.push({
+    type:'text',
+    text:`You are a nutrition expert AI inside a calorie tracking app. The user described their food: "${prompt}".
+${aiPhotoData?'They also attached a photo of the food -- use both the description and photo to estimate nutrition.':''}
+
+Your job:
+1. Identify the food(s)
+2. Estimate total calories and macronutrients (protein, carbs, fat in grams)
+3. Be concise and practical -- give a single combined estimate for everything described
+
+Reply ONLY with valid JSON in this exact format, nothing else:
+{
+  "name": "short food name for logging",
+  "cal": 320,
+  "prot": 12,
+  "carb": 45,
+  "fat": 8,
+  "note": "one sentence explaining the estimate"
+}`
   });
+
+  const localPhoto=aiPhotoData;
+  aiPhotoData=null;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        messages:[{role:'user',content:contentParts}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.map(c=>c.text||'').join('')||'';
+    let parsed;
+    try{
+      const clean=raw.replace(/```json|```/g,'').trim();
+      parsed=JSON.parse(clean);
+    } catch{parsed=null;}
+
+    loadingDiv.remove();
+
+    if(parsed&&parsed.cal!=null){
+      aiPendingResult={...parsed,photo:localPhoto||null};
+      const chat=document.getElementById('aiChat');
+      const div=document.createElement('div');
+      div.className='ai-msg bot';
+      div.innerHTML=`
+        <div class="ai-bubble">
+          ${localPhoto?`<img class="ai-img-preview" src="${localPhoto}" alt="food" />`:''}
+          <div class="ai-result-card">
+            <div class="ai-result-title">${parsed.name}</div>
+            <div class="ai-macros">
+              <div class="ai-mac"><span class="ai-mac-v" style="color:var(--blue-b)">${Math.round(parsed.cal)}</span><span class="ai-mac-l">kcal</span></div>
+              <div class="ai-mac"><span class="ai-mac-v" style="color:var(--green-b)">${Math.round(parsed.prot)}g</span><span class="ai-mac-l">protein</span></div>
+              <div class="ai-mac"><span class="ai-mac-v" style="color:var(--amber)">${Math.round(parsed.carb)}g</span><span class="ai-mac-l">carbs</span></div>
+              <div class="ai-mac"><span class="ai-mac-v" style="color:var(--red-b)">${Math.round(parsed.fat)}g</span><span class="ai-mac-l">fat</span></div>
+            </div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:10px;line-height:1.6">${parsed.note||''}</div>
+            <button class="ai-log-btn" onclick="logAIResult()">+ LOG THIS TO TODAY</button>
+          </div>
+        </div>`;
+      chat.appendChild(div);
+      chat.scrollTop=chat.scrollHeight;
+    } else {
+      appendAIMsg('bot','Sorry, I couldn\'t parse the nutrition info. Try describing your food differently, like "30g whey protein and 50g oats".');
+    }
+  } catch(err){
+    loadingDiv.remove();
+    appendAIMsg('bot','Connection error. Check your internet and try again.');
+  }
+}
+
+function logAIResult(){
+  if(!aiPendingResult) return;
+  const r=aiPendingResult;
+  getDayData().entries.push({
+    type:'item',
+    name:r.name,
+    cal:Math.round(r.cal),
+    prot:Math.round(r.prot),
+    carb:Math.round(r.carb),
+    fat:Math.round(r.fat),
+    id:Date.now(),
+    photo:r.photo||null
+  });
+  saveDB();
+  aiPendingResult=null;
+  toast('Logged: '+r.name+' ✓');
+  closeAI();
   render();
 }
 
-document.addEventListener('keydown', e=>{
-  if(e.key==='Enter' && document.getElementById('itemF').classList.contains('open')) addItem();
-  if(e.key==='Escape') { closeEdit(); closeCrav(); }
+// ═══════════ LABEL SCAN MODAL ═══════════
+let scanPhotoData=null;
+let scanPendingResult=null;
+
+function openScanModal(){document.getElementById('scanModal').classList.add('open');}
+function closeScanModal(){document.getElementById('scanModal').classList.remove('open');}
+
+function handleScanPhoto(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    scanPhotoData=ev.target.result;
+    const prev=document.getElementById('scanPreview');
+    prev.src=scanPhotoData;prev.classList.add('show');
+    document.getElementById('scanPlaceholder').style.display='none';
+    document.getElementById('scanResult').classList.remove('show');
+    // Auto-scan
+    await analyzeScanLabel();
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+async function analyzeScanLabel(){
+  if(!scanPhotoData) return;
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanFoodName').textContent='Analyzing label...';
+  document.getElementById('scanResult').classList.add('show');
+  document.getElementById('scanCal').textContent='--';
+  document.getElementById('scanProt').textContent='--';
+  document.getElementById('scanCarb').textContent='--';
+  document.getElementById('scanFat').textContent='--';
+  document.getElementById('scanServing').textContent='Reading...';
+
+  const base64=scanPhotoData.split(',')[1];
+  const mtype=scanPhotoData.split(';')[0].split(':')[1]||'image/jpeg';
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mtype,data:base64}},
+          {type:'text',text:`You are reading a nutrition label from this image. Extract the per-serving nutrition information.
+
+Reply ONLY with valid JSON, nothing else:
+{
+  "name": "product name",
+  "serving": "serving size description e.g. 30g (1 scoop)",
+  "cal": 120,
+  "prot": 24,
+  "carb": 3,
+  "fat": 2
+}
+
+If you cannot read a value, use null. If this is not a nutrition label, set name to "Unknown" and all numbers to null.`}
+        ]}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.map(c=>c.text||'').join('')||'';
+    let parsed;
+    try{const clean=raw.replace(/```json|```/g,'').trim();parsed=JSON.parse(clean);}catch{parsed=null;}
+    if(parsed){
+      scanPendingResult=parsed;
+      document.getElementById('scanFoodName').textContent=parsed.name||'Unknown product';
+      document.getElementById('scanServing').textContent=parsed.serving||'Per serving';
+      document.getElementById('scanCal').textContent=parsed.cal!=null?Math.round(parsed.cal):'--';
+      document.getElementById('scanProt').textContent=parsed.prot!=null?Math.round(parsed.prot)+'g':'--';
+      document.getElementById('scanCarb').textContent=parsed.carb!=null?Math.round(parsed.carb)+'g':'--';
+      document.getElementById('scanFat').textContent=parsed.fat!=null?Math.round(parsed.fat)+'g':'--';
+    } else {
+      document.getElementById('scanFoodName').textContent='Could not read label';
+      document.getElementById('scanServing').textContent='Try a clearer, well-lit photo of the nutrition panel';
+    }
+  } catch{
+    document.getElementById('scanFoodName').textContent='Error -- check internet connection';
+    document.getElementById('scanServing').textContent='';
+  }
+}
+
+function logScannedItem(){
+  if(!scanPendingResult) return;
+  const r=scanPendingResult;
+  if(!r.cal) {toast('Could not read calories from label');return;}
+  getDayData().entries.push({
+    type:'item',
+    name:r.name||(r.serving?r.serving+' serving':'Scanned item'),
+    cal:Math.round(r.cal)||0,
+    prot:r.prot!=null?Math.round(r.prot):null,
+    carb:r.carb!=null?Math.round(r.carb):null,
+    fat:r.fat!=null?Math.round(r.fat):null,
+    id:Date.now(),
+    photo:scanPhotoData||null
+  });
+  saveDB();
+  toast('Logged: '+r.name+' ✓');
+  closeScanModal();
+  // reset
+  scanPhotoData=null;scanPendingResult=null;
+  document.getElementById('scanPreview').classList.remove('show');
+  document.getElementById('scanResult').classList.remove('show');
+  document.getElementById('scanPlaceholder').style.display='block';
+  render();
+}
+
+// ═══════════ INIT ═══════════
+function init(){
+  document.getElementById('hdrDate') && (document.getElementById('hdrDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}));
+  ['mCal','mp','mca','mf'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateMealPrev);});
+  render();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&document.getElementById('itemF').classList.contains('open')) addItem();
+  if(e.key==='Escape'){closeEdit();closeCrav();}
 });
 
 init();
