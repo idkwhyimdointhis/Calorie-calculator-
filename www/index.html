@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -431,6 +431,7 @@ canvas.trend-canvas { width: 100%; height: 90px; }
     <button class="tab active" onclick="switchTab('log')">LOG</button>
     <button class="tab" onclick="switchTab('saved')">SAVED</button>
     <button class="tab" onclick="switchTab('history')">HISTORY</button>
+    <button class="tab" onclick="switchTab('remind')">REMIND</button>
   </div>
 
   <!-- SCROLL AREA (swipe target) -->
@@ -710,6 +711,59 @@ canvas.trend-canvas { width: 100%; height: 90px; }
       <div class="hist-list" id="histList"></div>
     </div>
 
+    <!-- ══ TAB: REMIND ══ -->
+    <div class="tab-panel" id="tab-remind">
+      <div class="water-c">
+        <div class="water-top">
+          <span class="water-title">LOG REMINDERS</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:12px;line-height:1.5">
+          Get pinged to log your meals throughout the day.
+        </div>
+
+        <label style="display:block;font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:5px">Reminder message</label>
+        <input type="text" id="remindMsg" placeholder="Log your meal -- stay accountable" maxlength="80"
+          style="width:100%;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:11px;margin-bottom:12px" />
+
+        <label style="display:block;font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:5px">Remind me every</label>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <input type="number" id="remindInterval" value="2" min="1"
+            style="flex:1;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:11px" />
+          <select id="remindUnit"
+            style="flex:1;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:11px">
+            <option value="hours" selected>Hours</option>
+            <option value="minutes">Minutes</option>
+          </select>
+        </div>
+
+        <label style="display:block;font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:5px">Active window</label>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <input type="text" id="remindStart" value="08:00"
+            style="flex:1;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:11px" />
+          <input type="text" id="remindEnd" value="22:00"
+            style="flex:1;padding:10px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-family:var(--mono);font-size:11px" />
+        </div>
+
+        <button onclick="startRemindersUI()"
+          style="width:100%;padding:12px;border:none;border-radius:6px;background:var(--green-b);color:#080808;font-family:var(--mono);font-weight:700;font-size:11px;letter-spacing:1px;margin-bottom:8px">
+          START REMINDERS
+        </button>
+        <button onclick="stopRemindersUI()"
+          style="width:100%;padding:12px;border:none;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:11px;letter-spacing:1px;margin-bottom:8px">
+          STOP REMINDERS
+        </button>
+        <button onclick="testReminderUI()"
+          style="width:100%;padding:12px;border:none;border-radius:6px;background:none;border:1px solid #1a3a1a;color:var(--green-b);font-family:var(--mono);font-size:11px;letter-spacing:1px">
+          TEST NOTIFICATION (5s)
+        </button>
+
+        <div id="remindStatus" style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:12px;text-align:center">Reminders are OFF</div>
+        <div style="font-family:var(--mono);font-size:8px;color:var(--muted);margin-top:14px;line-height:1.5;text-align:center">
+          These repeat daily on their own -- no cap, no need to reopen the app to keep them going.
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -872,7 +926,7 @@ let curTab='log';
 function switchTab(name) {
   curTab=name;
   document.querySelectorAll('.tab').forEach((t,i)=>{
-    const names=['log','saved','history'];
+    const names=['log','saved','history','remind'];
     t.classList.toggle('active',names[i]===name);
   });
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -1778,11 +1832,166 @@ function toast(msg){
   toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ═══════════ INIT ═══════════
+// ═══════════ REMINDERS (repeating local notifications, no cap) ═══════════
+const REMIND_STORAGE_KEY = 'fuelRemindSettings';
+const REMIND_ID_BASE = 7000; // distinct ID range so it never collides with other notif logic
+
+function getLocalNotifPlugin() {
+  return (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.LocalNotifications) || null;
+}
+
+function loadRemindSettings() {
+  try { return JSON.parse(localStorage.getItem(REMIND_STORAGE_KEY) || 'null'); } catch { return null; }
+}
+function saveRemindSettings(s) { localStorage.setItem(REMIND_STORAGE_KEY, JSON.stringify(s)); }
+
+function applyRemindSettingsToUI(s) {
+  if (!s) return;
+  const msg = document.getElementById('remindMsg');
+  const iv = document.getElementById('remindInterval');
+  const un = document.getElementById('remindUnit');
+  const st = document.getElementById('remindStart');
+  const en = document.getElementById('remindEnd');
+  const status = document.getElementById('remindStatus');
+  if (msg) msg.value = s.message || '';
+  if (iv) iv.value = s.intervalValue || 2;
+  if (un) un.value = s.intervalUnit || 'hours';
+  if (st) st.value = s.startTime || '08:00';
+  if (en) en.value = s.endTime || '22:00';
+  if (status) status.textContent = s.active ? `Reminders are ON (${s.slotCount || 0} times/day)` : 'Reminders are OFF';
+}
+
+function parseTimeToMinutes(str) {
+  const [h, m] = str.split(':').map(Number);
+  return (h || 0) * 60 + (m || 0);
+}
+
+// Builds a list of {hour, minute} slots covering the active window at the given interval.
+// A fixed, small list of daily time-slots -- not a rolling queue -- so there's nothing to run out of.
+function buildDailySlots(intervalMinutes, startStr, endStr) {
+  const start = parseTimeToMinutes(startStr);
+  const end = parseTimeToMinutes(endStr);
+  const slots = [];
+  let cursor = start;
+  const span = end >= start ? (end - start) : (1440 - start + end);
+  let elapsed = 0;
+  while (elapsed <= span) {
+    const mins = (start + elapsed) % 1440;
+    slots.push({ hour: Math.floor(mins / 60), minute: mins % 60 });
+    elapsed += intervalMinutes;
+  }
+  return slots;
+}
+
+async function ensureRemindChannel(LocalNotifications) {
+  if (!LocalNotifications.createChannel) return;
+  try {
+    await LocalNotifications.createChannel({
+      id: 'fuel_remind_channel',
+      name: 'FUEL Log Reminders',
+      importance: 4,
+      visibility: 1,
+      sound: 'default',
+      vibration: true,
+    });
+  } catch (e) { console.warn('Channel creation failed', e); }
+}
+
+async function cancelAllReminders(LocalNotifications) {
+  const ids = [];
+  for (let i = 0; i < 100; i++) ids.push({ id: REMIND_ID_BASE + i }); // generous headroom, never actually filled this high
+  try { await LocalNotifications.cancel({ notifications: ids }); } catch (e) {}
+}
+
+async function startRemindersUI() {
+  const LocalNotifications = getLocalNotifPlugin();
+  if (!LocalNotifications) {
+    toast('Reminders only work in the built Android app');
+    return;
+  }
+
+  const perm = await LocalNotifications.requestPermissions();
+  if (perm.display !== 'granted') {
+    toast('Notification permission not granted');
+    return;
+  }
+
+  const message = document.getElementById('remindMsg').value.trim() || 'Log your meal -- stay accountable';
+  const intervalValRaw = document.getElementById('remindInterval').value;
+  const unit = document.getElementById('remindUnit').value;
+  const startTime = document.getElementById('remindStart').value || '08:00';
+  const endTime = document.getElementById('remindEnd').value || '22:00';
+
+  const intervalMinutes = unit === 'hours' ? Number(intervalValRaw) * 60 : Number(intervalValRaw);
+  if (!intervalMinutes || intervalMinutes < 1) {
+    toast('Enter a valid interval');
+    return;
+  }
+
+  await ensureRemindChannel(LocalNotifications);
+  await cancelAllReminders(LocalNotifications);
+
+  const slots = buildDailySlots(intervalMinutes, startTime, endTime);
+
+  // One repeating notification per time-of-day slot -- each repeats forever on its own.
+  // No pre-filled queue, so there's no cap to run into and nothing to "top up" later.
+  const notifications = slots.map((slot, i) => ({
+    id: REMIND_ID_BASE + i,
+    title: 'FUEL',
+    body: message,
+    channelId: 'fuel_remind_channel',
+    schedule: { on: { hour: slot.hour, minute: slot.minute }, repeats: true, allowWhileIdle: true },
+  }));
+
+  await LocalNotifications.schedule({ notifications });
+
+  const settings = { message, intervalValue: intervalValRaw, intervalUnit: unit, startTime, endTime, active: true, slotCount: slots.length };
+  saveRemindSettings(settings);
+  applyRemindSettingsToUI(settings);
+  toast(`Reminders set -- ${slots.length}x/day, repeating`);
+}
+
+async function stopRemindersUI() {
+  const LocalNotifications = getLocalNotifPlugin();
+  if (LocalNotifications) await cancelAllReminders(LocalNotifications);
+  const settings = loadRemindSettings() || {};
+  settings.active = false;
+  saveRemindSettings(settings);
+  applyRemindSettingsToUI(settings);
+  toast('Reminders stopped');
+}
+
+async function testReminderUI() {
+  const LocalNotifications = getLocalNotifPlugin();
+  if (!LocalNotifications) {
+    toast('Test only works in the built Android app');
+    return;
+  }
+  const perm = await LocalNotifications.requestPermissions();
+  if (perm.display !== 'granted') {
+    toast('Notification permission not granted');
+    return;
+  }
+  await ensureRemindChannel(LocalNotifications);
+  const message = document.getElementById('remindMsg').value.trim() || 'Log your meal -- stay accountable';
+  await LocalNotifications.schedule({
+    notifications: [{
+      id: REMIND_ID_BASE + 99,
+      title: 'FUEL',
+      body: message,
+      channelId: 'fuel_remind_channel',
+      schedule: { at: new Date(Date.now() + 5000), allowWhileIdle: true },
+    }],
+  });
+  toast('Test notification in 5s');
+}
+
+
 function init(){
   document.getElementById('hdrDate') && (document.getElementById('hdrDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}));
   ['mCal','mp','mca','mf'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateMealPrev);});
   updateCravingWeeklyCount();
+  applyRemindSettingsToUI(loadRemindSettings());
   render();
 }
 
