@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -122,6 +122,39 @@ body { background: var(--bg); color: var(--text); font-family: var(--sans); widt
 .day-type-btn { background: none; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); font-family: var(--mono); font-size: 9px; cursor: pointer; padding: 4px 10px; transition: all 0.2s; }
 .day-type-btn.active { border-color: var(--blue-b); color: var(--blue-b); background: #0a0f1a; }
 .day-type-label { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-bottom: 5px; letter-spacing: 1px; }
+
+/* MEAL PLAN */
+.plan-c { background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 11px 13px; margin-bottom: 12px; }
+.plan-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.plan-title { font-family: var(--mono); font-size: 9px; color: var(--amber); letter-spacing: 2px; }
+.plan-toggle { background: none; border: none; font-family: var(--mono); font-size: 9px; color: var(--muted); cursor: pointer; padding: 2px 0; letter-spacing: 1px; }
+.plan-toggle:hover { color: var(--dim); }
+.plan-settings { display: none; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed var(--border); }
+.plan-settings.open { display: block; }
+.plan-settings-lbl { font-family: var(--mono); font-size: 8px; color: var(--muted); letter-spacing: 1px; margin: 6px 0 5px; }
+.plan-settings-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 7px; margin-bottom: 4px; }
+.plan-settings-grid.three { grid-template-columns: repeat(3,1fr); }
+.plan-settings-grid label { font-family: var(--mono); font-size: 8px; color: var(--muted); display: block; margin-bottom: 3px; }
+.plan-settings-grid input { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: var(--mono); font-size: 11px; padding: 5px 8px; width: 100%; }
+.plan-settings-save { display: flex; justify-content: flex-end; margin-top: 8px; }
+.plan-add-row { display: flex; gap: 5px; margin-bottom: 8px; }
+.plan-add-row input { background: var(--bg); border: 1px solid var(--border); border-radius: 5px; color: var(--text); font-family: var(--mono); font-size: 10px; padding: 6px 8px; min-width: 0; }
+.plan-add-row input.pname { flex: 2; }
+.plan-add-row input.pcal { flex: 1; }
+.plan-add-btn { background: none; border: 1px solid #4a3000; border-radius: 5px; color: var(--amber); font-family: var(--mono); font-size: 13px; cursor: pointer; padding: 0 10px; flex-shrink: 0; }
+.plan-add-btn:hover { background: #1a1000; }
+.plan-list { display: flex; flex-direction: column; gap: 5px; }
+.plan-item { display: flex; align-items: center; justify-content: space-between; background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 6px 9px; gap: 8px; }
+.plan-item-name { font-family: var(--sans); font-size: 11px; flex: 1; }
+.plan-item-cal { font-family: var(--mono); font-size: 9px; color: var(--muted); white-space: nowrap; }
+.plan-item-del { background: none; border: none; color: #444; cursor: pointer; font-size: 12px; flex-shrink: 0; }
+.plan-item-del:hover { color: var(--red-b); }
+.plan-empty { font-family: var(--mono); font-size: 9px; color: var(--muted); text-align: center; padding: 6px 0; }
+
+/* CHECKPOINT POPUP BANNER */
+.cp-popup { position: fixed; top: 10px; left: 50%; transform: translateX(-50%) translateY(-140%); width: calc(100vw - 32px); max-width: 380px; background: #0a1a0a; border: 1px solid #1a3a1a; color: var(--green-b); font-family: var(--mono); font-size: 10.5px; line-height: 1.5; padding: 10px 14px; border-radius: 8px; z-index: 500; box-shadow: 0 6px 20px rgba(0,0,0,0.5); transition: transform 0.3s ease; }
+.cp-popup.show { transform: translateX(-50%) translateY(0); }
+.cp-popup.over { background: #1a0a0a; border-color: #3a1a1a; color: var(--red-b); }
 
 /* CRAVING */
 .crav-c { background: #0a120a; border: 1px solid #162016; border-radius: 7px; padding: 10px 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
@@ -521,6 +554,43 @@ canvas.trend-canvas { width: 100%; height: 90px; }
         <div class="water-glasses" id="waterGlasses"></div>
       </div>
 
+      <!-- Meal Plan -->
+      <div class="plan-c">
+        <div class="plan-top">
+          <span class="plan-title">📋 MEAL PLAN</span>
+          <button class="plan-toggle" id="planToggleBtn" onclick="togglePlanSettings()">CHECKPOINTS ▾</button>
+        </div>
+
+        <div class="plan-settings" id="planSettings">
+          <div class="plan-settings-lbl">DEADLINE TIME</div>
+          <div class="plan-settings-grid">
+            <div><label>SWITCH AT</label><input type="time" id="pinp-deadline"></div>
+          </div>
+          <div class="plan-settings-lbl">BEFORE DEADLINE -- CALORIE RANGE</div>
+          <div class="plan-settings-grid">
+            <div><label>MIN</label><input type="number" id="pinp-beforeMin" placeholder="900"></div>
+            <div><label>MAX</label><input type="number" id="pinp-beforeMax" placeholder="1000"></div>
+          </div>
+          <div class="plan-settings-lbl">AFTER DEADLINE -- CALORIE RANGE (FULL DAY)</div>
+          <div class="plan-settings-grid">
+            <div><label>MIN</label><input type="number" id="pinp-afterMin" placeholder="1300"></div>
+            <div><label>MAX</label><input type="number" id="pinp-afterMax" placeholder="1400"></div>
+          </div>
+          <div class="plan-settings-save">
+            <button class="gsave" onclick="savePlanSettings()">SAVE CHECKPOINTS</button>
+          </div>
+        </div>
+
+        <div class="plan-settings-lbl" style="margin-top:0">TODAY'S PLANNED MEALS</div>
+        <div class="plan-add-row">
+          <input type="text" class="pname" id="pinp-mealname" placeholder="Meal name">
+          <input type="number" class="pcal" id="pinp-mealmin" placeholder="min kcal">
+          <input type="number" class="pcal" id="pinp-mealmax" placeholder="max kcal">
+          <button class="plan-add-btn" onclick="addPlannedMeal()">+</button>
+        </div>
+        <div class="plan-list" id="planList"></div>
+      </div>
+
       <!-- Craving -->
       <div class="crav-c">
         <span style="font-size:18px">🔥</span>
@@ -830,6 +900,20 @@ canvas.trend-canvas { width: 100%; height: 90px; }
   </div>
 </div>
 
+<!-- ══════ PLAN OVERRIDE WARNING MODAL ══════ -->
+<div class="serv-modal-bg" id="planWarnModal">
+  <div class="serv-modal">
+    <div class="serv-title" style="color:var(--red-b)">NOT ON TODAY'S PLAN</div>
+    <div class="serv-sub">"<span id="planWarnName"></span>" isn't on your planned meals list for today. Log it anyway?</div>
+    <div class="serv-actions">
+      <button class="bgst" onclick="cancelPlanOverride()">Cancel</button>
+      <button class="bamb" onclick="confirmPlanOverride()">LOG ANYWAY</button>
+    </div>
+  </div>
+</div>
+
+<div class="cp-popup" id="cpPopup"></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -875,6 +959,14 @@ let savedSortMode = 'freq'; // 'freq' | 'name'
 let savedCatFilter = 'All';
 let trendMode = 'all'; // 'cal' | 'prot'
 
+// ── Meal plan / checkpoints ──
+let planSettings = { deadline:'18:00', beforeMin:900, beforeMax:1000, afterMin:1300, afterMax:1400 };
+try { const p = JSON.parse(localStorage.getItem('fuelPlanSettings')||'null'); if(p) planSettings=Object.assign({},planSettings,p); } catch{}
+function savePlanSettingsDB() { localStorage.setItem('fuelPlanSettings', JSON.stringify(planSettings)); }
+let pendingPlanAction = null;
+let cpPopupTimer = null;
+const CHECKPOINT_NOTIF_ID = 8500;
+
 function saveDB() { localStorage.setItem('fuelDB', JSON.stringify(db)); }
 function saveGoalsDB() { localStorage.setItem('fuelGoals', JSON.stringify(goals)); }
 function saveFoodsDB() { localStorage.setItem('fuelSaved', JSON.stringify(savedFoods)); }
@@ -895,6 +987,7 @@ function getDayData(key) {
   const k = key||curDay;
   if (!db[k]) db[k]={entries:[],water:0};
   if (db[k].water===undefined) db[k].water=0;
+  if (db[k].planned===undefined) db[k].planned=[];
   return db[k];
 }
 
@@ -1031,6 +1124,144 @@ function updateGoals() {
   else{hk.textContent=goals.cal+' kcal goal';hk.className='hdr-kcal';}
 }
 
+// ═══════════ MEAL PLAN / CHECKPOINTS ═══════════
+function togglePlanSettings() {
+  const el=document.getElementById('planSettings');
+  el.classList.toggle('open');
+  document.getElementById('planToggleBtn').textContent=el.classList.contains('open')?'CHECKPOINTS ▴':'CHECKPOINTS ▾';
+  if(el.classList.contains('open')) {
+    document.getElementById('pinp-deadline').value=planSettings.deadline;
+    document.getElementById('pinp-beforeMin').value=planSettings.beforeMin;
+    document.getElementById('pinp-beforeMax').value=planSettings.beforeMax;
+    document.getElementById('pinp-afterMin').value=planSettings.afterMin;
+    document.getElementById('pinp-afterMax').value=planSettings.afterMax;
+  }
+}
+function savePlanSettings() {
+  let beforeMin=parseFloat(document.getElementById('pinp-beforeMin').value)||900;
+  let beforeMax=parseFloat(document.getElementById('pinp-beforeMax').value)||1000;
+  let afterMin=parseFloat(document.getElementById('pinp-afterMin').value)||1300;
+  let afterMax=parseFloat(document.getElementById('pinp-afterMax').value)||1400;
+  if(beforeMin>beforeMax) [beforeMin,beforeMax]=[beforeMax,beforeMin];
+  if(afterMin>afterMax) [afterMin,afterMax]=[afterMax,afterMin];
+  planSettings = {
+    deadline: document.getElementById('pinp-deadline').value || '18:00',
+    beforeMin, beforeMax, afterMin, afterMax
+  };
+  savePlanSettingsDB();
+  togglePlanSettings();
+  toast('Checkpoints saved ✓');
+}
+
+function renderPlannedMeals() {
+  const list=document.getElementById('planList');
+  if(!list) return;
+  const planned=getDayData().planned||[];
+  if(!planned.length){ list.innerHTML='<div class="plan-empty">No planned meals for today yet</div>'; return; }
+  list.innerHTML=planned.map(p=>`
+    <div class="plan-item">
+      <span class="plan-item-name">${p.name}</span>
+      <span class="plan-item-cal">${p.min}${p.max&&p.max!==p.min?'–'+p.max:''} kcal</span>
+      <button class="plan-item-del" onclick="removePlannedMeal(${p.id})">✕</button>
+    </div>`).join('');
+}
+function addPlannedMeal() {
+  const name=document.getElementById('pinp-mealname').value.trim();
+  if(!name){ document.getElementById('pinp-mealname').focus(); return; }
+  let min=parseFloat(document.getElementById('pinp-mealmin').value)||0;
+  let max=parseFloat(document.getElementById('pinp-mealmax').value)||min;
+  if(min>max) [min,max]=[max,min];
+  getDayData().planned.push({id:Date.now(),name,min,max});
+  saveDB();
+  document.getElementById('pinp-mealname').value='';
+  document.getElementById('pinp-mealmin').value='';
+  document.getElementById('pinp-mealmax').value='';
+  renderPlannedMeals();
+  toast('Added to plan: '+name);
+}
+function removePlannedMeal(id) {
+  const d=getDayData();
+  d.planned=d.planned.filter(p=>p.id!==id);
+  saveDB();
+  renderPlannedMeals();
+}
+
+// Gate a log action against today's planned meals. If nothing is planned, or the
+// name matches a planned meal, proceed immediately. Otherwise block with a modal
+// until the user explicitly confirms.
+function proceedWithPlanCheck(name, cb) {
+  const planned=getDayData().planned||[];
+  if(!planned.length){ cb(); return; }
+  const norm=name.trim().toLowerCase();
+  const match=planned.some(p=>p.name.trim().toLowerCase()===norm);
+  if(match){ cb(); return; }
+  pendingPlanAction=cb;
+  document.getElementById('planWarnName').textContent=name;
+  document.getElementById('planWarnModal').classList.add('open');
+}
+function confirmPlanOverride() {
+  document.getElementById('planWarnModal').classList.remove('open');
+  const cb=pendingPlanAction; pendingPlanAction=null;
+  if(cb) cb();
+}
+function cancelPlanOverride() {
+  document.getElementById('planWarnModal').classList.remove('open');
+  pendingPlanAction=null;
+}
+
+// Checkpoint status -- shown after every successful log, comparing today's running
+// total against the before/after-deadline calorie RANGE.
+function showCheckpointStatus() {
+  const d=getDayData();
+  const tCal=d.entries.reduce((s,e)=>s+(e.cal||0),0);
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  const [dh,dm]=(planSettings.deadline||'18:00').split(':').map(Number);
+  const deadlineMin=(dh||0)*60+(dm||0);
+  let min,max,label;
+  if(nowMin<deadlineMin) { min=planSettings.beforeMin; max=planSettings.beforeMax; label=`by ${planSettings.deadline}`; }
+  else { min=planSettings.afterMin; max=planSettings.afterMax; label='for the rest of today'; }
+  const toMin=Math.round(min-tCal);
+  const toMax=Math.round(max-tCal);
+  let msg, over;
+  if(toMax<0) {
+    msg=`${Math.round(tCal)} kcal logged -- that's ${Math.abs(toMax)}-${Math.abs(toMin)} kcal OVER your ${min}-${max} range ${label}`;
+    over=true;
+  } else if(toMin<0) {
+    msg=`${Math.round(tCal)} kcal logged -- in range, ${toMax} kcal left before ${max} ${label}`;
+    over=false;
+  } else {
+    msg=`${Math.round(tCal)} kcal logged -- ${toMin}-${toMax} kcal left ${label}`;
+    over=false;
+  }
+  showCheckpointPopup(msg, over);
+  fireCheckpointNotification(msg);
+}
+function showCheckpointPopup(msg, isOver) {
+  const el=document.getElementById('cpPopup');
+  if(!el) return;
+  el.textContent=msg;
+  el.className='cp-popup show'+(isOver?' over':'');
+  clearTimeout(cpPopupTimer);
+  cpPopupTimer=setTimeout(()=>el.classList.remove('show'),4500);
+}
+async function fireCheckpointNotification(msg) {
+  const LocalNotifications=getLocalNotifPlugin();
+  if(!LocalNotifications) return; // no-op outside the built Android app
+  try {
+    await ensureRemindChannel(LocalNotifications);
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: CHECKPOINT_NOTIF_ID,
+        title: 'FUEL -- Calorie check',
+        body: msg,
+        channelId: 'fuel_remind_channel',
+        schedule: { at: new Date(Date.now()+500), allowWhileIdle: true },
+      }]
+    });
+  } catch(e) { console.warn('Checkpoint notification failed', e); }
+}
+
 // ═══════════ WATER ═══════════
 function renderWater() {
   const water=getDayData().water||0;
@@ -1161,6 +1392,9 @@ function addItem() {
   const prot=hm?(parseFloat(document.getElementById('fp').value)||0):null;
   const carb=hm?(parseFloat(document.getElementById('fca').value)||0):null;
   const fat=hm?(parseFloat(document.getElementById('ff').value)||0):null;
+  proceedWithPlanCheck(name, ()=>_commitItem(name,cal,prot,carb,fat));
+}
+function _commitItem(name,cal,prot,carb,fat) {
   const now=new Date();
   const timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   const entry={type:'item',name,cal,prot,carb,fat,id:Date.now(),photo:itemPhotoData||null,tag:curItemTag,time:timeStr};
@@ -1179,6 +1413,7 @@ function addItem() {
   clearItemPhoto();
   document.getElementById('fn').focus();
   render();
+  showCheckpointStatus();
 }
 
 function addIngR() {
@@ -1213,6 +1448,9 @@ function addMeal() {
   const prot=hm?(parseFloat(document.getElementById('mp').value)||0):null;
   const carb=hm?(parseFloat(document.getElementById('mca').value)||0):null;
   const fat=hm?(parseFloat(document.getElementById('mf').value)||0):null;
+  proceedWithPlanCheck(mealName, ()=>_commitMeal(mealName,ings,cal,prot,carb,fat));
+}
+function _commitMeal(mealName,ings,cal,prot,carb,fat) {
   const now=new Date();
   const timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   const entry={type:'meal',name:mealName,ingredients:ings,cal,prot,carb,fat,id:Date.now(),photo:mealPhotoData||null,tag:curMealTag,time:timeStr};
@@ -1232,6 +1470,7 @@ function addMeal() {
   document.querySelectorAll('#mealTagRow .mtag-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   clearMealPhoto();
   render();
+  showCheckpointStatus();
 }
 
 // ═══════════ RENDER LOG ═══════════
@@ -1247,6 +1486,7 @@ function render() {
   updateGoals();
   updateStreak();
   renderWater();
+  renderPlannedMeals();
   checkCopyYesterday();
   updateCravingWeeklyCount();
 
@@ -1427,6 +1667,9 @@ function confirmServing(){
   const m = parseFloat(document.getElementById('servMult').value)||1;
   const f = servPendingFood;
   if(!f) return;
+  proceedWithPlanCheck(f.name, ()=>_commitServing(f,m));
+}
+function _commitServing(f,m){
   const now=new Date();
   const timeStr=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
   const entry = {
@@ -1446,6 +1689,7 @@ function confirmServing(){
   closeServModal();
   switchTab('log');render();
   toast('Added: '+f.name+(m!==1?` ×${m}`:'')+' ✓');
+  showCheckpointStatus();
 }
 
 function deleteSaved(idx){
