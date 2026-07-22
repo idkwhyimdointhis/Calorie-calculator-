@@ -1,4 +1,4 @@
-<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -445,6 +445,12 @@ canvas.trend-canvas { width: 100%; height: 90px; }
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+.ac-dropdown{display:none;position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--surface2,#161616);border:1px solid var(--border,#2a2a2a);border-top:none;border-radius:0 0 6px 6px;max-height:220px;overflow-y:auto;box-shadow:0 8px 16px rgba(0,0,0,.4)}
+.ac-item{padding:9px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);font-family:var(--mono);font-size:11px}
+.ac-item:last-child{border-bottom:none}
+.ac-item:active,.ac-item:hover{background:rgba(255,255,255,.06)}
+.ac-name{color:var(--text,#eee);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.ac-macro{color:var(--muted,#888);font-size:9px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -633,7 +639,10 @@ canvas.trend-canvas { width: 100%; height: 90px; }
         </div>
         <label class="flbl">FOOD NAME</label>
         <div class="fmain">
-          <input type="text" id="fn" placeholder="e.g. Protein shake" />
+          <div class="ac-wrap" style="position:relative;flex:1">
+            <input type="text" id="fn" placeholder="e.g. Protein shake" autocomplete="off" />
+            <div class="ac-dropdown" id="acFn"></div>
+          </div>
           <input type="number" id="fc" placeholder="kcal" />
         </div>
         <!-- Meal tag -->
@@ -677,7 +686,10 @@ canvas.trend-canvas { width: 100%; height: 90px; }
           <input type="file" id="mealCamInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleMealPhoto(event)" />
           <input type="file" id="mealGallInput" class="hidden-input" accept="image/*" onchange="handleMealPhoto(event)" />
         </div>
-        <input type="text" class="mninp" id="mname" placeholder="Meal name (e.g. Post-Workout)" />
+        <div class="ac-wrap" style="position:relative">
+          <input type="text" class="mninp" id="mname" placeholder="Meal name (e.g. Post-Workout)" autocomplete="off" />
+          <div class="ac-dropdown" id="acMname"></div>
+        </div>
         <!-- Meal tag -->
         <label class="meal-tag-lbl">MEAL TAG</label>
         <div class="meal-tag-row" id="mealTagRow">
@@ -1404,6 +1416,7 @@ function _commitItem(name,cal,prot,carb,fat) {
     toast('Logged + saved to favourites ⭐');
   } else toast('Added: '+name);
   saveDB();
+  upsertFoodHistory({name,cal,prot,carb,fat});
   ['fn','fc','fp','fca','ff'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
   document.getElementById('imc').checked=false;
   document.getElementById('isave').checked=false;
@@ -1458,6 +1471,7 @@ function _commitMeal(mealName,ings,cal,prot,carb,fat) {
   if(document.getElementById('msave').checked){saveFood({type:'meal',name:mealName,ingredients:ings,cal,prot,carb,fat});toast('Logged + saved ⭐');}
   else toast('Added: '+mealName);
   saveDB();
+  upsertFoodHistory({name:mealName,cal,prot,carb,fat});
   document.getElementById('mname').value='';
   document.getElementById('mCal').value='';
   document.getElementById('ingL').innerHTML='';
@@ -2076,7 +2090,166 @@ function toast(msg){
   toastTimer=setTimeout(()=>el.classList.remove('show'),2200);
 }
 
-// ═══════════ REMINDERS (repeating local notifications, no cap) ═══════════
+// ═══════════ FOOD HISTORY DB (IndexedDB -- scales to 100k+ unique foods) ═══════════
+// Separate from `savedFoods` (Favourites/star list). Every logged item/meal lands
+// here automatically. Favourites are always a subset of this (favouriting also logs),
+// but not everything logged is a favourite.
+const FOODDB_NAME = 'fuelFoodDB';
+const FOODDB_STORE = 'foods';
+let _foodDbPromise = null;
+
+function openFoodDB() {
+  if (_foodDbPromise) return _foodDbPromise;
+  _foodDbPromise = new Promise((resolve) => {
+    if (!window.indexedDB) { resolve(null); return; }
+    const req = indexedDB.open(FOODDB_NAME, 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(FOODDB_STORE)) {
+        db.createObjectStore(FOODDB_STORE, { keyPath: 'nameLower' });
+      }
+    };
+    req.onsuccess = (e) => resolve(e.target.result);
+    req.onerror = () => resolve(null);
+  });
+  return _foodDbPromise;
+}
+
+// Upserts on every real log: bumps useCount, refreshes macros with latest non-null values.
+async function upsertFoodHistory(food) {
+  const db = await openFoodDB();
+  if (!db || !food || !food.name || !food.name.trim()) return;
+  const nameLower = food.name.trim().toLowerCase();
+  const tx = db.transaction(FOODDB_STORE, 'readwrite');
+  const store = tx.objectStore(FOODDB_STORE);
+  const getReq = store.get(nameLower);
+  getReq.onsuccess = () => {
+    const existing = getReq.result;
+    store.put({
+      nameLower,
+      name: food.name.trim(),
+      cal: food.cal != null ? food.cal : (existing ? existing.cal : null),
+      prot: food.prot != null ? food.prot : (existing ? existing.prot : null),
+      carb: food.carb != null ? food.carb : (existing ? existing.carb : null),
+      fat: food.fat != null ? food.fat : (existing ? existing.fat : null),
+      useCount: (existing ? existing.useCount : 0) + 1,
+      lastUsed: Date.now(),
+    });
+  };
+}
+
+// Quiet upsert used only for one-time backfill from existing Favourites -- doesn't
+// touch a record that's already there, so it never inflates real usage counts.
+async function upsertFoodHistoryQuiet(food) {
+  const db = await openFoodDB();
+  if (!db || !food || !food.name) return;
+  const nameLower = food.name.trim().toLowerCase();
+  const tx = db.transaction(FOODDB_STORE, 'readwrite');
+  const store = tx.objectStore(FOODDB_STORE);
+  const getReq = store.get(nameLower);
+  getReq.onsuccess = () => {
+    if (getReq.result) return;
+    store.put({
+      nameLower,
+      name: food.name.trim(),
+      cal: food.cal != null ? food.cal : null,
+      prot: food.prot != null ? food.prot : null,
+      carb: food.carb != null ? food.carb : null,
+      fat: food.fat != null ? food.fat : null,
+      useCount: food.useCount || 0,
+      lastUsed: food.savedAt || Date.now(),
+    });
+  };
+}
+
+async function backfillFoodHistoryFromFavourites() {
+  if (!savedFoods || !savedFoods.length) return;
+  for (const f of savedFoods) { await upsertFoodHistoryQuiet(f); }
+}
+
+// Prefix search using an IDBKeyRange bound on the sorted keyPath -- fast even with
+// a huge number of unique entries, since it's a native indexed range scan, not a
+// full table scan.
+async function searchFoodHistory(prefix, limit) {
+  limit = limit || 8;
+  const db = await openFoodDB();
+  const p = (prefix || '').trim().toLowerCase();
+  if (!db || !p) return [];
+  return new Promise((resolve) => {
+    const tx = db.transaction(FOODDB_STORE, 'readonly');
+    const store = tx.objectStore(FOODDB_STORE);
+    const range = IDBKeyRange.bound(p, p + '\uffff');
+    const results = [];
+    const req = store.openCursor(range);
+    req.onsuccess = (e) => {
+      const cursor = e.target.result;
+      if (cursor && results.length < 300) {
+        results.push(cursor.value);
+        cursor.continue();
+      } else {
+        results.sort((a, b) => (b.useCount || 0) - (a.useCount || 0) || a.name.localeCompare(b.name));
+        resolve(results.slice(0, limit));
+      }
+    };
+    req.onerror = () => resolve([]);
+  });
+}
+
+function escapeHtml(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function fillItemFromHistory(food) {
+  document.getElementById('fn').value = food.name;
+}
+
+function fillMealFromHistory(food) {
+  document.getElementById('mname').value = food.name;
+}
+
+function setupAutocomplete(inputId, dropdownId, fillFn) {
+  const input = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  if (!input || !dropdown) return;
+  let debounceTimer;
+
+  function closeDropdown() { dropdown.style.display = 'none'; dropdown.innerHTML = ''; }
+
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    const val = input.value;
+    debounceTimer = setTimeout(async () => {
+      if (!val.trim()) { closeDropdown(); return; }
+      const results = await searchFoodHistory(val, 8);
+      if (!results.length) { closeDropdown(); return; }
+      dropdown.innerHTML = results.map((r, i) => {
+        return `<div class="ac-item" data-i="${i}"><span class="ac-name">${escapeHtml(r.name)}</span></div>`;
+      }).join('');
+      dropdown.style.display = 'block';
+      dropdown.querySelectorAll('.ac-item').forEach((el) => {
+        el.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+          const idx = parseInt(el.getAttribute('data-i'));
+          fillFn(results[idx]);
+          closeDropdown();
+        });
+        el.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const idx = parseInt(el.getAttribute('data-i'));
+          fillFn(results[idx]);
+          closeDropdown();
+        }, { passive: false });
+      });
+    }, 120);
+  });
+
+  input.addEventListener('blur', () => { setTimeout(closeDropdown, 150); });
+  input.addEventListener('focus', () => { if (input.value.trim()) input.dispatchEvent(new Event('input')); });
+}
+
+
 const REMIND_STORAGE_KEY = 'fuelRemindSettings';
 const REMIND_ID_BASE = 7000; // distinct ID range so it never collides with other notif logic
 
@@ -2236,6 +2409,9 @@ function init(){
   ['mCal','mp','mca','mf'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateMealPrev);});
   updateCravingWeeklyCount();
   applyRemindSettingsToUI(loadRemindSettings());
+  backfillFoodHistoryFromFavourites();
+  setupAutocomplete('fn','acFn',fillItemFromHistory);
+  setupAutocomplete('mname','acMname',fillMealFromHistory);
   render();
 }
 
